@@ -7,9 +7,7 @@ const Login = async (req, res) => {
   try {
     const { email, password: pass } = req.body;
 
-    const user = await User.findOne({
-      $and: [{ email: email }],
-    });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({
@@ -18,7 +16,8 @@ const Login = async (req, res) => {
       });
     }
 
-    const isMatch = bcrypt.compare(pass, user.password);
+    // ⚡ Fix: await bcrypt.compare
+    const isMatch = await bcrypt.compare(pass, user.password);
 
     if (!isMatch) {
       return res.status(400).json({
@@ -30,12 +29,12 @@ const Login = async (req, res) => {
     if (!user.isVerified) {
       return res.status(202).json({
         success: true,
-        message: "Please verify to login!",
+        message: "Please verify your account to login!",
         User: {
           username: user.username,
           email: user.email,
           isVerified: user.isVerified,
-        }
+        },
       });
     }
 
@@ -64,7 +63,7 @@ const Login = async (req, res) => {
     console.log("Error in Logging In: ", err);
     return res.status(500).json({
       success: false,
-      message: "Failed to LoginIn!",
+      message: "Failed to login!",
     });
   }
 };

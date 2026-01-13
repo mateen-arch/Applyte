@@ -4,25 +4,30 @@ const { User } = require("../../models/user");
 const getResume = async (req, res) => {
   try {
     const userID = req._id;
-    const user = await User.findById(userID);
+    const user = await User.findById(userID).populate("resume");
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
+        message: "User not found!",
       });
     }
 
-    if (!user.resume) {
-      return res.status(400).json({
+    if (!user.resume || user.resume.length === 0) {
+      return res.status(404).json({
         success: false,
+        message: "No resume found!",
       });
     }
 
-    const resume = await Resume.findById(user.resume);
+    // Get the most recent resume (last one in array)
+    const resumeId = user.resume[user.resume.length - 1];
+    const resume = await Resume.findById(resumeId);
 
     if (!resume) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
+        message: "Resume not found!",
       });
     }
 
@@ -31,7 +36,8 @@ const getResume = async (req, res) => {
       Resume: resume,
     });
   } catch (e) {
-    console.log("Error in Getting Resume: ", e);
+    console.error("Error in Getting Resume:", e);
+    console.error("Error stack:", e.stack);
     return res.status(500).json({
       success: false,
       message: "Error in fetching Resume!",

@@ -4,28 +4,50 @@ const jwt = require("jsonwebtoken");
 
 const VerifyOTP = async (req, res) => {
   try {
-    const { otp: OTP } = req.body;
-    const user = await User.findOne({ otp: OTP });
+    const { otp: OTP, email, user_email } = req.body;
+    const emailToVerify = email || user_email || req.params?.email || req.query?.email;
+
+    if (!OTP || !emailToVerify) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP and email are required!",
+      });
+    }
+
+    // Find user by email first
+    const user = await User.findOne({ email: emailToVerify });
 
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "Please enter correct OTP!",
+        message: "User not found!",
       });
     }
 
-    const currTime = Date.now();
-
-    if (currTime > user.otpExpiry + 10 * 60 * 1000) {
+    // Compare OTP as strings to avoid type issues
+    if (user.otp.toString() !== OTP.toString()) {
       return res.status(400).json({
         success: false,
-        message: "OTP is expired!",
+        message: "Incorrect OTP!",
       });
     }
 
+    // Check if OTP is expired
+    const currTime = Date.now();
+    if (currTime > user.otpExpiry) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP has expired!",
+      });
+    }
+
+    // Mark user as verified
     user.isVerified = true;
+    user.otp = null; // optional: clear OTP after verification
+    user.otpExpiry = null;
     await user.save();
 
+    // Generate JWT
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: 24 * 60 * 60 * 1000,
     });

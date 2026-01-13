@@ -29,6 +29,7 @@
     "mime-types": "^3.0.1",
     "mongoose": "^8.18.0",
     "multer": "^2.0.2",
+    "pdf-parse": "^2.4.5",
     "react-email": "^4.2.8",
     "resend": "^6.0.1"
   }

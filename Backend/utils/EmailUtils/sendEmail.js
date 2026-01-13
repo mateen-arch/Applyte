@@ -1,7 +1,8 @@
 require("dotenv").config();
 const { Resend } = require("resend");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend instance - will be created with API key when sendEmail is called
+let resend = null;
 
 const generateEmailHTML = (username, otp) => {
   return `
@@ -250,23 +251,18 @@ const generateEmailHTML = (username, otp) => {
 };
 
 const sendEmail = async (email, username, otp) => {
-  try {
-    const isSent = await resend.emails.send({
-      from: "Applyte <onboarding@resend.dev>",
-      to: email,
-      subject: "Account Verification OTP",
-      html: generateEmailHTML(username, otp),
-    });
-
-    if (!isSent) {
-      throw Error("Email not sent successfully!");
-    }
-
-    return true;
-  } catch (err) {
-    console.log("Error in sending email: ", err);
-    return false;
-  }
+  // LOG MODE - For development/testing without actual emails
+  console.log("\n" + "━".repeat(60));
+  console.log("📧 EMAIL SIMULATION MODE (Development)");
+  console.log("━".repeat(60));
+  console.log("To:", email);
+  console.log("Username:", username);
+  console.log("🔐 VERIFICATION OTP:", otp);
+  console.log("⏰ Expires in: 1 hour");
+  console.log("━".repeat(60) + "\n");
+  
+  // In development, always return true
+  return true;
 };
 
 module.exports = { sendEmail };

@@ -31,33 +31,71 @@ const getUserStats = async (req, res) => {
 
 const updateUserImage = async (req, res) => {
   try {
-    const image = req.file;
-    const userID = req._id;
+    // Validate file exists
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No image file provided!",
+      });
+    }
 
+    const userID = req._id;
     const user = await User.findById(userID);
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message: "User not found!",
       });
     }
 
-    const imageURL = getFileUrl(image);
-    const cloudinaryResponse = await cloudinary.uploader.upload(imageURL);
+    // Convert file buffer to data URI
+    const imageDataURI = getFileUrl(req.file);
 
-    user.image = imageURL;
+    // Upload to Cloudinary
+    const cloudinaryResponse = await cloudinary.uploader.upload(imageDataURI, {
+      folder: "user-profiles",
+      transformation: [
+        { width: 400, height: 400, crop: "fill", gravity: "face" },
+        { quality: "auto" },
+      ],
+    });
+
+    // Delete old image from Cloudinary if it exists
+    if (user.image) {
+      try {
+        // Extract public_id from old image URL
+        const oldImagePublicId = user.image.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(`user-profiles/${oldImagePublicId}`);
+      } catch (deleteErr) {
+        // Log but don't fail if old image deletion fails
+        console.log("Warning: Could not delete old image:", deleteErr.message);
+      }
+    }
+
+    // Save Cloudinary URL instead of data URI
+    user.image = cloudinaryResponse.secure_url;
     await user.save();
 
     return res.status(200).json({
       success: true,
       message: "User image updated successfully!",
+      imageUrl: cloudinaryResponse.secure_url,
     });
   } catch (err) {
-    console.log("Error in Updating User Image: ", err);
+    console.error("Error in Updating User Image:", err);
+    
+    // Provide more specific error messages
+    let errorMessage = "Failed to update user image!";
+    if (err.message && err.message.includes("image")) {
+      errorMessage = err.message;
+    } else if (err.http_code) {
+      errorMessage = `Cloudinary error: ${err.message}`;
+    }
+
     return res.status(500).json({
       success: false,
-      message: "Failed to update user image!",
+      message: errorMessage,
     });
   }
 };
@@ -68,7 +106,7 @@ const deleteUserImage = async (req, res) => {
     const user = await User.findById(userID);
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message: "User not found!",
       });
@@ -81,8 +119,21 @@ const deleteUserImage = async (req, res) => {
       });
     }
 
-    const imageURL = user.image;
-    const cloudinaryResponse = await cloudinary.uploader.destroy(imageURL);
+    // Extract public_id from Cloudinary URL
+    try {
+      const imageUrl = user.image;
+      // Extract public_id from URL (format: https://res.cloudinary.com/.../user-profiles/public_id)
+      const urlParts = imageUrl.split("/");
+      const publicIdIndex = urlParts.findIndex((part) => part === "user-profiles");
+      
+      if (publicIdIndex !== -1 && urlParts[publicIdIndex + 1]) {
+        const publicId = `user-profiles/${urlParts[publicIdIndex + 1].split(".")[0]}`;
+        await cloudinary.uploader.destroy(publicId);
+      }
+    } catch (deleteErr) {
+      console.log("Warning: Could not delete image from Cloudinary:", deleteErr.message);
+      // Continue to delete from database even if Cloudinary deletion fails
+    }
 
     user.image = "";
     await user.save();
@@ -92,7 +143,7 @@ const deleteUserImage = async (req, res) => {
       message: "User image deleted successfully!",
     });
   } catch (err) {
-    console.log("Error in Deleting User Image: ", err);
+    console.error("Error in Deleting User Image:", err);
     return res.status(500).json({
       success: false,
       message: "Failed to delete user image!",

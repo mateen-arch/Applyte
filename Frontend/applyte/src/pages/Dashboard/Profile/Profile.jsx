@@ -358,7 +358,7 @@ const Profile = () => {
             {/* Profile Image Upload Card */}
             <Card className="bg-gradient-to-br from-gray-900/80 to-black/80 border-gray-800/50 backdrop-blur-sm shadow-2xl">
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-xl">
+                <CardTitle className="flex items-center gap-2 text-xl text-white">
                   <Camera className="w-5 h-5 text-blue-400" />
                   Profile Picture
                 </CardTitle>
@@ -433,7 +433,7 @@ const Profile = () => {
             {/* Profile Information Card */}
             <Card className="bg-gradient-to-br from-gray-900/80 to-black/80 border-gray-800/50 backdrop-blur-sm shadow-2xl">
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-xl">
+                <CardTitle className="flex items-center gap-2 text-xl text-white">
                   <User className="w-5 h-5 text-green-400" />
                   Personal Information
                 </CardTitle>
@@ -509,7 +509,7 @@ const Profile = () => {
             {/* Documents Stats Card */}
             <Card className="bg-gradient-to-br from-gray-900/80 to-black/80 border-gray-800/50 backdrop-blur-sm shadow-2xl">
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-xl">
+                <CardTitle className="flex items-center gap-2 text-xl text-white">
                   <FileText className="w-5 h-5 text-blue-400" />
                   Documents Generated
                 </CardTitle>

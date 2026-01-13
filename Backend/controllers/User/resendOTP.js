@@ -26,15 +26,17 @@ const resendOTP = async (req, res) => {
     const otpExpiry = new Date();
     otpExpiry.setHours(otpExpiry.getHours() + 1);
 
+    // Send verification email
     const isEmailSent = await sendEmail(email, user.username, otp);
 
     if (!isEmailSent) {
-      return res.status(400).json({
+      return res.status(500).json({
         success: false,
-        message: "Something went wrong!",
+        message: "Failed to send verification email. Please check your email address and try again.",
       });
     }
 
+    // Update user with new OTP and expiry
     user.otp = otp;
     user.otpExpiry = otpExpiry;
     await user.save();
@@ -44,10 +46,11 @@ const resendOTP = async (req, res) => {
       message: "OTP resent successfully!",
     });
   } catch (e) {
-    console.log("Error in resending the OTP: ", e);
+    console.error("Error in resending the OTP:", e);
+    console.error("Error stack:", e.stack);
     return res.status(500).json({
       success: false,
-      message: "Something went wrong in sending OTP!",
+      message: "Failed to resend OTP. Please try again later.",
     });
   }
 };
