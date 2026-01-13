@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const userRoutes = require("./routes/user");
 const resumeRoutes = require("./routes/resume");
 const jobSearchRoutes = require("./routes/jobSearch");
+const applicationRoutes = require("./routes/application");
 
 const app = express();
 console.log("typeof userRoutes:", typeof userRoutes);
@@ -40,6 +41,7 @@ app.get("/", (req, res) => {
 app.use("/api/user", userRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/searchjobs", jobSearchRoutes);
+app.use("/api/applications", applicationRoutes);
 
 // Connect to MongoDB and start server
 mongoose

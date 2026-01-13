@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Resume"
     }],
+    applications: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Application"
+    }],
     otp: {
       type: String,
     },

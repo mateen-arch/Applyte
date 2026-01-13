@@ -1,12 +1,34 @@
 const axios = require("axios");
 const { generateQuery } = require("../AI/functionality");
 const { Resume } = require("../../models/resume");
+const { User } = require("../../models/user");
 const { extractJsonStringAdvanced } = require("../../utils/extractJsonHelper");
 
 const searchJobs = async (req, res) => {
   try {
-    const id = req._id; // ✅ safer
-    const resume = await Resume.findById("68d771b08d1c8ea060d0a186");
+    const userID = req._id;
+    
+    // Get user and check if they have resumes
+    const user = await User.findById(userID);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found!",
+      });
+    }
+
+    // Check if user has any resumes
+    if (!user.resume || user.resume.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No resume found! Please upload a resume first.",
+      });
+    }
+
+    // Get the most recent resume (last one in array)
+    const resumeId = user.resume[user.resume.length - 1];
+    const resume = await Resume.findById(resumeId);
+    
     if (!resume) {
       return res.status(404).json({
         success: false,

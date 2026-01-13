@@ -47,7 +47,7 @@ const Signup = async (req, res) => {
       // Clean up: delete the user if email sending failed
       // But only if it's a new user (not updating existing)
       if (!isEmailPresent) {
-        await User.findOneAndDelete({ email: email });
+      await User.findOneAndDelete({ email: email });
       }
       return res.status(500).json({
         success: false,

@@ -4,6 +4,7 @@ import Profile from "./Profile/Profile";
 import DashboardOverview from "./DashboardOverview/DashboardOverview";
 import MyResume from "./Resume/MyResume";
 import JobSearch from "./JobSearch/jobsearch";
+import Applications from "./Applications/Applications";
 
 const Dashboard = () => {
   const { activeComponent } = useSidebar();
@@ -19,14 +20,7 @@ const Dashboard = () => {
       case "settings":
         return <Profile />;
       case "applications":
-        return (
-          <div className="flex-1 overflow-y-auto bg-black">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <h1 className="text-3xl font-bold text-white mb-4">Applications</h1>
-              <p className="text-gray-400">Track and manage your job applications here.</p>
-            </div>
-          </div>
-        );
+        return <Applications />;
       case "cover-letters":
         return (
           <div className="flex-1 overflow-y-auto bg-black">
