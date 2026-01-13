@@ -44,6 +44,38 @@ const userSchema = new mongoose.Schema(
     isVerified: {
         type: Boolean,
         default: false
+    },
+    plan: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Plan",
+    },
+    // Keep subscription field for backward compatibility, but prefer plan
+    subscription: {
+      plan: {
+        type: String,
+        enum: ["free", "pro", "business"],
+        default: "free"
+      },
+      status: {
+        type: String,
+        enum: ["active", "cancelled", "expired", "trial"],
+        default: "active"
+      },
+      startDate: {
+        type: Date,
+        default: Date.now
+      },
+      endDate: {
+        type: Date
+      },
+      stripeCustomerId: {
+        type: String,
+        default: ""
+      },
+      stripeSubscriptionId: {
+        type: String,
+        default: ""
+      }
     }
   },
   { timestamps: true }

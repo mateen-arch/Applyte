@@ -6,13 +6,26 @@ import { Progress } from "@/components/ui/progress";
 import axios from "axios";
 import { base_url } from "@/lib/constant";
 import { toast } from "sonner";
+import { Store } from "@/store/store";
+import PremiumFeature from "@/components/PremiumFeature/PremiumFeature";
+import ResumeEditor from "@/components/ResumeEditor/ResumeEditor";
 
 const MyResume = () => {
+  const { user } = Store();
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [resume, setResume] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
+
+  // Check if user has premium subscription (prefer plan over subscription field)
+  const planSlug = user?.plan?.slug || user?.subscription?.plan || "free";
+  const planStatus = user?.plan?.status || user?.subscription?.status || "active";
+  const isPremium = (planSlug === "pro" || planSlug === "business") && planStatus === "active";
+
+  const handleResumeUpdate = (updatedResume) => {
+    setResume(updatedResume);
+  };
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
@@ -218,25 +231,48 @@ const MyResume = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {/* Resume Details */}
-                {resume.name && (
+                {/* Personal Information */}
+                {resume.personal_information && (
                   <div>
-                    <h3 className="text-sm font-medium text-gray-400 mb-2">Name</h3>
-                    <p className="text-white">{resume.name}</p>
+                    <h3 className="text-sm font-medium text-gray-400 mb-3">Personal Information</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {resume.personal_information.full_name && (
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Full Name</p>
+                          <p className="text-white">{resume.personal_information.full_name}</p>
+                        </div>
+                      )}
+                      {resume.personal_information.email && (
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Email</p>
+                          <p className="text-white">{resume.personal_information.email}</p>
+                        </div>
+                      )}
+                      {resume.personal_information.phone && (
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Phone</p>
+                          <p className="text-white">{resume.personal_information.phone}</p>
+                        </div>
+                      )}
+                      {resume.personal_information.address && (
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">Address</p>
+                          <p className="text-white">{resume.personal_information.address}</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
-                {resume.email && (
+
+                {/* Description */}
+                {resume.description?.content && (
                   <div>
-                    <h3 className="text-sm font-medium text-gray-400 mb-2">Email</h3>
-                    <p className="text-white">{resume.email}</p>
+                    <h3 className="text-sm font-medium text-gray-400 mb-2">Summary</h3>
+                    <p className="text-white">{resume.description.content}</p>
                   </div>
                 )}
-                {resume.phone && (
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-400 mb-2">Phone</h3>
-                    <p className="text-white">{resume.phone}</p>
-                  </div>
-                )}
+
+                {/* Skills */}
                 {resume.skills && resume.skills.length > 0 && (
                   <div>
                     <h3 className="text-sm font-medium text-gray-400 mb-2">Skills</h3>
@@ -252,6 +288,8 @@ const MyResume = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Experience */}
                 {resume.experience && resume.experience.length > 0 && (
                   <div>
                     <h3 className="text-sm font-medium text-gray-400 mb-2">Experience</h3>
@@ -261,14 +299,29 @@ const MyResume = () => {
                           key={index}
                           className="p-4 rounded-lg bg-neutral-800/50 border border-neutral-700/50"
                         >
-                          <p className="text-white font-medium">{exp.title || exp.position}</p>
+                          <p className="text-white font-medium">{exp.job_title}</p>
                           {exp.company && <p className="text-gray-400 text-sm">{exp.company}</p>}
-                          {exp.duration && <p className="text-gray-500 text-xs">{exp.duration}</p>}
+                          {(exp.start_date || exp.end_date) && (
+                            <p className="text-gray-500 text-xs">
+                              {exp.start_date} - {exp.end_date || "Present"}
+                            </p>
+                          )}
+                          {exp.responsibilities && exp.responsibilities.length > 0 && (
+                            <ul className="mt-2 space-y-1">
+                              {exp.responsibilities.map((resp, idx) => (
+                                <li key={idx} className="text-gray-300 text-sm list-disc list-inside">
+                                  {resp}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
+
+                {/* Education */}
                 {resume.education && resume.education.length > 0 && (
                   <div>
                     <h3 className="text-sm font-medium text-gray-400 mb-2">Education</h3>
@@ -278,11 +331,15 @@ const MyResume = () => {
                           key={index}
                           className="p-4 rounded-lg bg-neutral-800/50 border border-neutral-700/50"
                         >
-                          <p className="text-white font-medium">{edu.degree || edu.school}</p>
-                          {edu.school && edu.degree && (
-                            <p className="text-gray-400 text-sm">{edu.school}</p>
+                          <p className="text-white font-medium">{edu.degree}</p>
+                          {edu.university && (
+                            <p className="text-gray-400 text-sm">{edu.university}</p>
                           )}
-                          {edu.year && <p className="text-gray-500 text-xs">{edu.year}</p>}
+                          {(edu.start_date || edu.end_date) && (
+                            <p className="text-gray-500 text-xs">
+                              {edu.start_date} - {edu.end_date || "Present"}
+                            </p>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -303,6 +360,18 @@ const MyResume = () => {
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Resume Customization Section - Premium Feature */}
+        {resume && (
+          <PremiumFeature
+            isPremium={isPremium}
+            featureName="AI Resume Customization"
+            description="Get real-time, personalized AI suggestions to improve your resume. Apply changes instantly with one click or edit manually."
+            className="mt-8"
+          >
+            <ResumeEditor resume={resume} onResumeUpdate={handleResumeUpdate} />
+          </PremiumFeature>
         )}
       </div>
     </div>

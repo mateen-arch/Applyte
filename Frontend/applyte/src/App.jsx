@@ -4,6 +4,7 @@ import axios from "axios";
 import Home from "./pages/Home/Home";
 import EmailVerification from "./pages/Auth/emailVer";
 import Dashboard from "./pages/Dashboard/dashboard";
+import Payments from "./pages/Dashboard/Payments/Payments";
 import { Store } from "./store/store";
 import { base_url } from "./lib/constant";
 import { SidebarProvider } from "./Context/ActiveDashboardComp";
@@ -65,6 +66,14 @@ function App() {
             <AuthRoute>
               <EmailVerification />
             </AuthRoute>
+          }
+        />
+        <Route
+          path="/pricing"
+          element={
+            <PrivateRoute>
+              <Payments />
+            </PrivateRoute>
           }
         />
       </Routes>

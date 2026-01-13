@@ -8,6 +8,7 @@ const mime = require("mime-types");
 const {
   resumeAnalyzerPrompt,
   jobSearchQueryGeneratorPromt,
+  resumeCustomizationPrompt,
 } = require("./prompts");
 const { text } = require("express");
 
@@ -120,4 +121,19 @@ const generateQuery = async (resumeData) => {
   }
 };
 
-module.exports = { resumeAnalyzerHelper, generateQuery };
+const generateResumeSuggestions = async (resumeData) => {
+  try {
+    const prompt = resumeCustomizationPrompt(resumeData);
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    });
+
+    return response.text;
+  } catch (err) {
+    console.log("Error in Resume Suggestions Generator: ", err);
+    throw err;
+  }
+};
+
+module.exports = { resumeAnalyzerHelper, generateQuery, generateResumeSuggestions };

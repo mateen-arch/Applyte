@@ -71,6 +71,63 @@ Rules:
 7. Do not include explanations, only the JSON.   
 `;
 
+const resumeCustomizationPrompt = (resumeData) => {
+  return `You are an expert resume optimization specialist and ATS (Applicant Tracking System) expert. Your task is to analyze the provided resume and generate highly specific, actionable improvement suggestions.
+
+RESUME DATA:
+${JSON.stringify(resumeData, null, 2)}
+
+**CRITICAL INSTRUCTIONS:**
+- Analyze the ACTUAL content of this specific resume
+- Provide suggestions that are PERSONALIZED to this resume's content, not generic advice
+- Focus on concrete, actionable improvements
+- Consider ATS optimization, keyword optimization, impact enhancement, and formatting
+- Each suggestion must be specific to the actual content in the resume
+- Provide the exact field/path where the change should be applied
+- Include the suggested improvement text/value
+
+**ANALYSIS FRAMEWORK:**
+1. **ATS Optimization**: Check for missing keywords, formatting issues, and ATS-friendly structure
+2. **Impact Enhancement**: Identify weak descriptions, missing metrics, and opportunities to quantify achievements
+3. **Content Quality**: Review clarity, relevance, and professional tone
+4. **Structure & Format**: Check for missing sections, poor organization, or formatting issues
+5. **Keyword Optimization**: Identify missing industry-relevant keywords and skills
+
+**OUTPUT FORMAT:** Return ONLY valid JSON:
+{
+  "ats_score": 0-100,
+  "overall_assessment": "Brief summary of resume quality",
+  "suggestions": [
+    {
+      "id": "unique-suggestion-id",
+      "type": "experience|education|skills|description|personal_information|format",
+      "field_path": "experience[0].responsibilities[1]",
+      "priority": "high|medium|low",
+      "title": "Specific suggestion title",
+      "current_value": "Current content at this field",
+      "suggested_value": "Improved content with specific changes",
+      "reason": "Why this change improves the resume",
+      "impact": "Expected impact of this change"
+    }
+  ],
+  "summary": {
+    "strengths": ["List of resume strengths"],
+    "weaknesses": ["List of main weaknesses"],
+    "recommendations": ["Top 3 priority recommendations"]
+  }
+}
+
+**RULES:**
+1. Output must be strictly valid JSON
+2. Each suggestion must reference a specific field in the resume structure
+3. Provide actual suggested text, not just descriptions
+4. Prioritize suggestions (high = critical, medium = important, low = nice to have)
+5. Be specific and actionable - avoid generic advice
+6. Focus on improvements that will increase ATS score and interview chances
+
+Now analyze this resume and provide personalized, actionable suggestions.`;
+};
+
 const jobSearchQueryGeneratorPromt = (resumeData) => {
   const prompt = `You are an expert global job search optimization specialist. Your task is to create ONE perfectly optimized job search query that yields the highest-quality and most relevant job matches worldwide. 
 
@@ -141,4 +198,5 @@ Add 1 hard skills tied to that role.)`;
 module.exports = {
   resumeAnalyzerPrompt,
   jobSearchQueryGeneratorPromt,
+  resumeCustomizationPrompt,
 };

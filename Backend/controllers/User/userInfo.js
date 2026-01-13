@@ -154,7 +154,9 @@ const deleteUserImage = async (req, res) => {
 const getUserInfo = async (req, res) => {
   try {
     const userID = req._id;
-    const user = await User.findById(userID);
+    const user = await User.findById(userID).populate("plan");
+    const { Plan } = require("../../models/plan");
+    const { ensureUserPlan } = require("../../utils/planHelpers");
 
     if (!user) {
       return res.status(400).json({
@@ -162,6 +164,19 @@ const getUserInfo = async (req, res) => {
         message: "User not found!",
       });
     }
+
+    // Ensure user has a plan
+    let plan = user.plan;
+    if (!plan) {
+      plan = await ensureUserPlan(userID);
+      user.plan = plan._id;
+      await user.save();
+      plan = await Plan.findById(plan._id);
+    }
+
+    // Get plan slug for backward compatibility
+    const planSlug = plan ? plan.slug : "free";
+
     return res.status(200).json({
       success: true,
       message: "User info fetched successfully!",
@@ -169,6 +184,18 @@ const getUserInfo = async (req, res) => {
         username: user.username,
         email: user.email,
         image: user.image,
+        plan: plan ? {
+          _id: plan._id,
+          slug: plan.slug,
+          name: plan.name,
+          price: plan.price,
+          status: plan.status,
+        } : null,
+        // Backward compatibility with subscription field
+        subscription: {
+          plan: planSlug,
+          status: plan ? plan.status : "active"
+        },
       },
     });
   } catch (err) {

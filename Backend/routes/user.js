@@ -13,6 +13,7 @@ const {
   getUser,
   getUserStats,
 } = require("../controllers/User/userInfo");
+const { updateSubscription, getSubscription } = require("../controllers/User/subscription");
 const { uploadFile, handleMulterError } = require("../middlewares/multer");
 
 const router = express.Router();
@@ -39,5 +40,9 @@ router.post(
   updateUserImage
 );
 router.delete("/auth/delete-image", isAuthorized, deleteUserImage);
+
+// Subscription routes
+router.get("/subscription", isAuthorized, getSubscription);
+router.put("/subscription", isAuthorized, updateSubscription);
 
 module.exports = router;

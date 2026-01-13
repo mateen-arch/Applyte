@@ -1,5 +1,6 @@
 import React from "react";
 import { Check, Star, Zap, Crown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const pricingPlans = [
   {
@@ -59,6 +60,13 @@ const pricingPlans = [
 ];
 
 const Pricing = () => {
+  const navigate = useNavigate();
+
+  const handlePlanClick = (planName) => {
+    // Navigate to payments page for authenticated users, or show auth modal
+    navigate("/pricing");
+  };
+
   return (
     <div className="relative py-24 bg-black text-white overflow-hidden">
       {/* Background Effects */}
@@ -139,6 +147,7 @@ const Pricing = () => {
 
                 {/* CTA Button */}
                 <button
+                  onClick={() => handlePlanClick(plan.name)}
                   className={`w-full py-2.5 px-4 rounded-lg font-semibold text-sm transition-all duration-300 ${
                     plan.buttonVariant === "primary"
                       ? "bg-white text-black hover:bg-gray-100 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"

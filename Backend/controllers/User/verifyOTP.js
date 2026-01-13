@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { User } = require("../../models/user");
 const jwt = require("jsonwebtoken");
+const { ensureUserPlan } = require("../../utils/planHelpers");
 
 const VerifyOTP = async (req, res) => {
   try {
@@ -45,6 +46,11 @@ const VerifyOTP = async (req, res) => {
     user.isVerified = true;
     user.otp = null; // optional: clear OTP after verification
     user.otpExpiry = null;
+    await user.save();
+
+    // Ensure user has a plan (create free plan if doesn't exist)
+    const plan = await ensureUserPlan(user._id);
+    user.plan = plan._id;
     await user.save();
 
     // Generate JWT

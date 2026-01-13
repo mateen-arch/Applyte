@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const { User } = require("../../models/user");
 const { sendEmail } = require("../../utils/EmailUtils/sendEmail");
+const { ensureUserPlan } = require("../../utils/planHelpers");
 
 const Signup = async (req, res) => {
   try {
