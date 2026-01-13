@@ -48,12 +48,13 @@ import { Progress } from "@/components/ui/progress";
 
 const Profile = () => {
   const { user, setUser } = Store();
-  const [userInfo, setUserInfo] = useState({
-    username: "",
-    email: "",
-    image: "",
-  });
-  const [imagePreview, setImagePreview] = useState("");
+  const [userInfo, setUserInfo] = useState(() => ({
+    username: user?.username || "",
+    email: user?.email || "",
+    image: user?.image || "",
+  }));
+
+  const [imagePreview, setImagePreview] = useState(user?.image || "");
   const [isFetching, setIsFetching] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -63,44 +64,47 @@ const Profile = () => {
     resumes: 0,
     coverLetters: 0,
     applications: 0,
-    recentActivity: []
   });
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
+    const fetchUserStats = async () => {
       try {
         setIsFetching(true);
-        const res = await axios.get(`${base_url}/user/auth/get-info`, {
+        const response = await axios.get(`${base_url}/user/get-stats`, {
           withCredentials: true,
         });
 
-        if (res.data.success && res.data.User) {
-          setUserInfo(res.data.User);
-          setImagePreview(res.data.User.image || "");
-          setUser(res.data.User);
-          
-          // Fetch user stats (you'll need to implement these API endpoints)
-          const statsRes = await axios.get(`${base_url}/user/stats`, {
-            withCredentials: true,
+        if (response.data.success) {
+          setStats({
+            resumes: response.data.ResumeCount || 0,
+            coverLetters: response.data.CoverLetterCount || 0,
+            applications: response.data.ApplicationCount || 0,
           });
-          
-          if (statsRes.data.success) {
-            setStats(statsRes.data.stats);
-          }
+        } else {
+          console.log("Failed to fetch stats:", response.data.message);
         }
-      } catch (error) {
-        console.log("Error fetching user info: ", error);
-        toast.error(
-          error.response?.data?.message || "Failed to fetch user info."
-        );
+      } catch (err) {
+        console.log("Failed to fetch the user stats:", err);
+        toast.error("Failed to load statistics");
       } finally {
         setIsFetching(false);
       }
     };
 
-    fetchUserInfo();
-  }, [setUser]);
+    fetchUserStats();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setUserInfo({
+        username: user.username || "",
+        email: user.email || "",
+        image: user.image || "",
+      });
+      setImagePreview(user.image || "");
+    }
+  }, [user]);
 
   const handleImageChange = (event) => {
     const file = event.target.files?.[0];
@@ -131,7 +135,7 @@ const Profile = () => {
     try {
       setIsUploading(true);
       setUploadProgress(0);
-      
+
       const formData = new FormData();
       formData.append("image", file);
 
@@ -155,8 +159,14 @@ const Profile = () => {
       if (res.data.success) {
         setTimeout(() => {
           toast.success("Profile image updated successfully!");
-          setUserInfo((prev) => ({ ...prev, image: res.data.imageUrl || imagePreview }));
-          setUser((prev) => ({ ...prev, image: res.data.imageUrl || imagePreview }));
+          setUserInfo((prev) => ({
+            ...prev,
+            image: res.data.imageUrl || imagePreview,
+          }));
+          setUser((prev) => ({
+            ...prev,
+            image: res.data.imageUrl || imagePreview,
+          }));
           if (fileInputRef.current) {
             fileInputRef.current.value = "";
           }
@@ -175,55 +185,109 @@ const Profile = () => {
   };
 
   const handleUpdateInfo = async () => {
-    if (!userInfo.username.trim() || !userInfo.email.trim()) {
-      toast.error("Username and email are required.");
-      return;
-    }
+  // Trim inputs
+  const trimmedUsername = userInfo.username.trim();
+  const trimmedEmail = userInfo.email.trim();
 
+  // Backend allows updating one field at a time
+  // So we don't need to require both fields
+
+  // Check if nothing changed
+  const usernameUnchanged = trimmedUsername === user.username;
+  const emailUnchanged = trimmedEmail === user.email;
+  
+  if (usernameUnchanged && emailUnchanged) {
+    toast.error("No changes to update.");
+    return;
+  }
+
+  // Validate email if provided and different
+  if (trimmedEmail && !emailUnchanged) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(userInfo.email.trim())) {
+    if (!emailRegex.test(trimmedEmail)) {
       toast.error("Please enter a valid email address.");
       return;
     }
+  }
 
-    try {
-      setIsUpdating(true);
-      const res = await axios.put(
-        `${base_url}/user/auth/update-info`,
-        {
-          username: userInfo.username.trim(),
-          email: userInfo.email.trim(),
-        },
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      if (res.data.success) {
-        toast.success("Profile information updated successfully!");
-        setUserInfo(res.data.User);
-        setUser(res.data.User);
-      }
-    } catch (error) {
-      console.log("Error updating user info: ", error);
-      toast.error(
-        error.response?.data?.message || "Failed to update profile info."
-      );
-    } finally {
-      setIsUpdating(false);
+  // Validate username if provided and different
+  if (trimmedUsername && !usernameUnchanged) {
+    if (trimmedUsername.length < 3) {
+      toast.error("Username must be at least 3 characters.");
+      return;
     }
-  };
+  }
+
+  // Prepare payload - send only what's provided
+  const updatePayload = {};
+  
+  if (trimmedUsername && !usernameUnchanged) {
+    updatePayload.username = trimmedUsername;
+  }
+  
+  if (trimmedEmail && !emailUnchanged) {
+    updatePayload.email = trimmedEmail;
+  }
+
+  // If payload is empty after checks, return
+  if (Object.keys(updatePayload).length === 0) {
+    toast.error("No changes to update.");
+    return;
+  }
+
+  try {
+    setIsUpdating(true);
+    
+    const res = await axios.put(
+      `${base_url}/user/auth/update-info`,
+      updatePayload,
+      {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    if (res.data.success) {
+      toast.success(res.data.message || "Profile updated!");
+      
+      // Update state with new data
+      setUserInfo(prev => ({
+        ...prev,
+        username: res.data.User.username || prev.username,
+        email: res.data.User.email || prev.email,
+      }));
+      
+      setUser(prev => ({
+        ...prev,
+        username: res.data.User.username || prev.username,
+        email: res.data.User.email || prev.email,
+        image: res.data.User.image || prev.image,
+      }));
+    }
+  } catch (error) {
+    console.log("Update error:", error);
+    
+    // Specific error handling
+    if (error.response?.status === 400) {
+      if (error.response?.data?.message === "Email already exists!") {
+        toast.error("This email is already registered. Please use a different one.");
+      } else {
+        toast.error(error.response.data.message || "Update failed.");
+      }
+    } else {
+      toast.error("Failed to update profile. Please try again.");
+    }
+  } finally {
+    setIsUpdating(false);
+  }
+};
 
   const handleDeleteAccount = async () => {
     try {
       setIsDeleting(true);
-      const res = await axios.delete(
-        `${base_url}/user/auth/delete-account`,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await axios.delete(`${base_url}/user/auth/delete-account`, {
+        withCredentials: true,
+      });
 
       if (res.data.success) {
         toast.success("Account deleted successfully. Redirecting...");
@@ -234,9 +298,7 @@ const Profile = () => {
       }
     } catch (error) {
       console.log("Error deleting account: ", error);
-      toast.error(
-        error.response?.data?.message || "Failed to delete account."
-      );
+      toast.error(error.response?.data?.message || "Failed to delete account.");
     } finally {
       setIsDeleting(false);
     }
@@ -268,7 +330,7 @@ const Profile = () => {
                   <AvatarImage src={imagePreview} className="object-cover" />
                 ) : null}
                 <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-3xl font-bold">
-                  {userInfo.username?.charAt(0)?.toUpperCase() || "U"}
+                  {user.username?.charAt(0)?.toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
@@ -277,11 +339,11 @@ const Profile = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
-                {userInfo.username}
+                {user.username}
               </h1>
               <p className="text-gray-400 flex items-center gap-2 mt-1">
                 <Mail className="w-4 h-4" />
-                {userInfo.email}
+                {user.email}
               </p>
               <Badge className="mt-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700">
                 Active User
@@ -309,14 +371,17 @@ const Profile = () => {
                   <div className="relative group">
                     <Avatar className="w-32 h-32 border-4 border-white/10 shadow-xl transition-all duration-300 group-hover:scale-105 group-hover:border-blue-500/50">
                       {imagePreview ? (
-                        <AvatarImage src={imagePreview} className="object-cover" />
+                        <AvatarImage
+                          src={imagePreview}
+                          className="object-cover"
+                        />
                       ) : null}
                       <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-4xl font-bold">
-                        {userInfo.username?.charAt(0)?.toUpperCase() || "U"}
+                        {user.username?.charAt(0)?.toUpperCase() || "U"}
                       </AvatarFallback>
                     </Avatar>
                   </div>
-                  
+
                   <div className="flex-1 space-y-4">
                     <div className="space-y-3">
                       <Input
@@ -326,20 +391,25 @@ const Profile = () => {
                         onChange={handleImageChange}
                         className="bg-gray-900/50 border-gray-700 text-white file:bg-gradient-to-r file:from-blue-600 file:to-purple-600 file:text-white file:border-0 file:rounded-md file:px-4 file:py-2"
                       />
-                      
+
                       {uploadProgress > 0 && (
                         <div className="space-y-2">
-                          <Progress value={uploadProgress} className="h-2 bg-gray-800" />
+                          <Progress
+                            value={uploadProgress}
+                            className="h-2 bg-gray-800"
+                          />
                           <p className="text-sm text-gray-400 text-right">
                             {uploadProgress}% uploaded
                           </p>
                         </div>
                       )}
-                      
+
                       <Button
                         type="button"
                         onClick={handleUploadImage}
-                        disabled={isUploading || !fileInputRef.current?.files?.length}
+                        disabled={
+                          isUploading || !fileInputRef.current?.files?.length
+                        }
                         className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                       >
                         {isUploading ? (
@@ -409,7 +479,7 @@ const Profile = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="pt-4">
                   <Button
                     type="button"
@@ -455,42 +525,35 @@ const Profile = () => {
                         <FileText className="w-6 h-6 text-blue-400" />
                       </div>
                     </div>
-                    <p className="text-3xl font-bold text-white">{stats.resumes}</p>
+                    <p className="text-3xl font-bold text-white">
+                      {stats.resumes}
+                    </p>
                     <p className="text-sm text-gray-400">Resumes</p>
                   </div>
-                  
+
                   <div className="text-center p-4 bg-gray-900/50 rounded-lg hover:bg-gray-800/50 transition-colors">
                     <div className="flex items-center justify-center mb-2">
                       <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
                         <FileEdit className="w-6 h-6 text-green-400" />
                       </div>
                     </div>
-                    <p className="text-3xl font-bold text-white">{stats.coverLetters}</p>
+                    <p className="text-3xl font-bold text-white">
+                      {stats.coverLetters}
+                    </p>
                     <p className="text-sm text-gray-400">Cover Letters</p>
                   </div>
-                  
+
                   <div className="text-center p-4 bg-gray-900/50 rounded-lg hover:bg-gray-800/50 transition-colors col-span-2">
                     <div className="flex items-center justify-center mb-2">
                       <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center">
                         <Briefcase className="w-6 h-6 text-purple-400" />
                       </div>
                     </div>
-                    <p className="text-3xl font-bold text-white">{stats.applications}</p>
+                    <p className="text-3xl font-bold text-white">
+                      {stats.applications}
+                    </p>
                     <p className="text-sm text-gray-400">Applications</p>
                   </div>
-                </div>
-
-                <Separator className="bg-gray-800" />
-
-                <div className="space-y-3">
-                  <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                    <Eye className="w-4 h-4 mr-2" />
-                    View All Documents
-                  </Button>
-                  <Button variant="outline" className="w-full border-gray-700 hover:bg-gray-900/50">
-                    <Download className="w-4 h-4 mr-2" />
-                    Export Data
-                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -509,12 +572,13 @@ const Profile = () => {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <p className="text-sm text-red-200/70">
-                    Deleting your account will permanently remove all your documents and data.
+                    Deleting your account will permanently remove all your
+                    documents and data.
                   </p>
-                  
+
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button 
+                      <Button
                         variant="destructive"
                         className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white"
                       >
@@ -536,10 +600,12 @@ const Profile = () => {
                             <li>Your profile and account</li>
                           </ul>
                           <p className="mt-4 text-red-300">
-                            Please type <strong className="text-white">DELETE</strong> to confirm.
+                            Please type{" "}
+                            <strong className="text-white">DELETE</strong> to
+                            confirm.
                           </p>
-                          <Input 
-                            placeholder="Type DELETE to confirm" 
+                          <Input
+                            placeholder="Type DELETE to confirm"
                             className="mt-2 bg-gray-800 border-red-900 text-white"
                             id="delete-confirm"
                           />

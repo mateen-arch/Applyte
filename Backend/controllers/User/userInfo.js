@@ -2,6 +2,33 @@ const { User } = require("../../models/user");
 const { cloudinary } = require("../../utils/FileUploadUtils/Cloudinary");
 const { getFileUrl } = require("../../utils/FileUploadUtils/dataURI");
 
+const getUserStats = async (req, res) => {
+  try {
+    const userID = req._id;
+
+    const user = await User.findById(userID);
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found!",
+      });
+    }
+
+    const resumeCount = user.resume.length;
+    return res.status(200).json({
+      success: true,
+      ResumeCount: resumeCount,
+    });
+  } catch (err) {
+    console.log("Error in fetching User stats: ", err);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch user stats!",
+    });
+  }
+};
+
 const updateUserImage = async (req, res) => {
   try {
     const image = req.file;
@@ -116,17 +143,19 @@ const updateUserInfo = async (req, res) => {
 
     const { username, email } = req.body;
 
-    isEmailPresent = await User.findOne({ email: email });
+    if (email) {
+      isEmailPresent = await User.findOne({ email: email });
 
-    if (isEmailPresent) {
-      return res.status(400).json({
-        success: false,
-        message: "Email already exists!",
-      });
+      if (isEmailPresent) {
+        return res.status(400).json({
+          success: false,
+          message: "Email already exists!",
+        });
+      }
     }
 
-    user.username = username;
-    user.email = email;
+    if (username) user.username = username;
+    if (email) user.email = email;
     await user.save();
 
     return res.status(200).json({
@@ -188,5 +217,6 @@ module.exports = {
   deleteUserImage,
   getUserInfo,
   getUser,
+  getUserStats,
   updateUserInfo,
 };

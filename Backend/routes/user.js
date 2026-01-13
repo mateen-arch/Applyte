@@ -5,7 +5,7 @@ const { Login } = require("../controllers/User/login");
 const { resendOTP } = require("../controllers/User/resendOTP");
 const { Logout } = require("../controllers/User/logout");
 const { isAuthorized } = require("../middlewares/auth");
-const { updateUserImage, deleteUserImage, getUserInfo, updateUserInfo, getUser } = require("../controllers/User/userInfo");
+const { updateUserImage, deleteUserImage, getUserInfo, updateUserInfo, getUser, getUserStats } = require("../controllers/User/userInfo");
 const { uploadFile } = require("../middlewares/multer");
 const router = express.Router();
 
@@ -19,5 +19,6 @@ router.delete("/auth/delete-image", isAuthorized, deleteUserImage);
 router.get("/auth/get-info", isAuthorized, getUserInfo);
 router.put("/auth/update-info", isAuthorized, updateUserInfo);
 router.get("/auth/get-user", getUser);
+router.get("/get-stats",isAuthorized,getUserStats);
 
 module.exports = router;
