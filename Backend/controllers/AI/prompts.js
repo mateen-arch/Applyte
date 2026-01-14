@@ -195,70 +195,8 @@ Add 1 hard skills tied to that role.)`;
 };
 
 
-const followUpEmailPrompt = (application, daysSinceApplication, emailType) => {
-  const statusLabels = {
-    applied: "Applied",
-    interview: "Interview",
-    offer: "Offer",
-    rejected: "Rejected",
-  };
-
-  const emailTypeLabels = {
-    follow_up: "Follow-up",
-    thank_you: "Thank You",
-    status_check: "Status Check",
-  };
-
-  return `You are a professional career coach and email writing expert. Generate a professional, context-aware ${emailTypeLabels[emailType] || "Follow-up"} email for a job application.
-
-APPLICATION CONTEXT:
-- Job Title: ${application.jobTitle}
-- Company: ${application.companyName}
-- Location: ${application.location || "Not specified"}
-- Platform: ${application.jobPlatform}
-- Date Applied: ${new Date(application.dateApplied).toLocaleDateString()}
-- Days Since Application: ${daysSinceApplication}
-- Current Status: ${statusLabels[application.status] || application.status}
-
-RESUME CONTEXT:
-${application.resumeVersion ? JSON.stringify(application.resumeVersion.personal_information, null, 2) : "Resume information not available"}
-
-**CRITICAL INSTRUCTIONS:**
-- Write a professional, concise, and personalized email
-- Reference the specific job title and company name
-- Mention when the application was submitted (${daysSinceApplication} days ago)
-- Express continued interest in the position
-- Keep the tone professional but warm
-- Include a clear call-to-action
-- For "thank_you" type: Thank them for an interview or opportunity
-- For "status_check" type: Politely inquire about application status
-- For "follow_up" type: Follow up on the application submission
-
-**OUTPUT FORMAT:** Return ONLY valid JSON:
-{
-  "subject": "Professional email subject line",
-  "body": "Complete email body with proper formatting",
-  "greeting": "Personalized greeting",
-  "closing": "Professional closing with name",
-  "keyPoints": ["Key point 1", "Key point 2", "Key point 3"],
-  "tone": "professional|warm|formal",
-  "estimatedLength": "short|medium|long"
-}
-
-**RULES:**
-1. Output must be strictly valid JSON
-2. Email should be ready to copy-paste (with line breaks)
-3. Keep subject line under 60 characters
-4. Body should be 3-5 paragraphs maximum
-5. Include placeholders like [Your Name] if name is not available
-6. Make it specific to this job and company, not generic
-
-Now generate the ${emailTypeLabels[emailType] || "Follow-up"} email.`;
-};
-
 module.exports = {
   resumeAnalyzerPrompt,
   jobSearchQueryGeneratorPromt,
   resumeCustomizationPrompt,
-  followUpEmailPrompt,
 };

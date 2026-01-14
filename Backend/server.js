@@ -9,16 +9,10 @@ const userRoutes = require("./routes/user");
 const resumeRoutes = require("./routes/resume");
 const jobSearchRoutes = require("./routes/jobSearch");
 const applicationRoutes = require("./routes/application");
+const sessionRoutes = require("./routes/session_routes");
+const aiRoutes = require("./routes/ai_routes");
 
 const app = express();
-console.log("typeof userRoutes:", typeof userRoutes);
-console.log("typeof resumeRoutes:", typeof resumeRoutes);
-console.log("typeof jobSearchRoutes:", typeof jobSearchRoutes);
-
-console.log("userRoutes:", userRoutes);
-console.log("resumeRoutes:", resumeRoutes);
-console.log("jobSearchRoutes:", jobSearchRoutes);
-
 
 // Middlewares
 app.use(express.urlencoded({ extended: true }));
@@ -40,8 +34,10 @@ app.get("/", (req, res) => {
 // API Routes
 app.use("/api/user", userRoutes);
 app.use("/api/resume", resumeRoutes);
-app.use("/api/searchjobs", jobSearchRoutes);
+app.use("/api/", jobSearchRoutes);
 app.use("/api/applications", applicationRoutes);
+app.use("/api/session", sessionRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Connect to MongoDB and start server
 mongoose

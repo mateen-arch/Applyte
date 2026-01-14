@@ -5,6 +5,7 @@ import DashboardOverview from "./DashboardOverview/DashboardOverview";
 import MyResume from "./Resume/MyResume";
 import JobSearch from "./JobSearch/jobsearch";
 import Applications from "./Applications/Applications";
+import InterviewPrep from "./InterviewPrep/InterviewPrep";
 
 const Dashboard = () => {
   const { activeComponent } = useSidebar();
@@ -31,14 +32,7 @@ const Dashboard = () => {
           </div>
         );
       case "interview-prep":
-        return (
-          <div className="flex-1 overflow-y-auto bg-black">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <h1 className="text-3xl font-bold text-white mb-4">Interview Prep</h1>
-              <p className="text-gray-400">Prepare for your interviews with AI-powered assistance.</p>
-            </div>
-          </div>
-        );
+        return <InterviewPrep />;
       default:
         return <DashboardOverview />;
     }

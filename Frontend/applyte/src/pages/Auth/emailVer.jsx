@@ -70,7 +70,7 @@ const EmailVerification = () => {
 
       const res = await axios.post(
         `${base_url}/user/auth/verify`,
-        { otp: otpString },
+        { otp: otpString, email: user_email },
         {
           headers: {
             "Content-Type": "application/json",

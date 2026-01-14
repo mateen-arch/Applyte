@@ -18,7 +18,7 @@ const JobSearch = () => {
       setError(null);
 
       const response = await axios.get(
-        `${base_url}/searchjobs/search_jobs_by_resume`,
+        `${base_url}/search_jobs_by_resume`,
         {
           withCredentials: true,
         }
