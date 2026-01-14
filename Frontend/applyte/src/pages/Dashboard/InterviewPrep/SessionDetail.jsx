@@ -107,8 +107,8 @@ const SessionDetail = ({ sessionId, onDeleted }) => {
 
   return (
     <div className="space-y-5">
-      <Card className="bg-neutral-900/60 backdrop-blur border-neutral-800 overflow-hidden">
-        <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+      <Card className="bg-yellow-950/20 backdrop-blur border-yellow-500/30 overflow-hidden">
+        <div className="h-1 bg-gradient-to-r from-yellow-500 via-yellow-600 to-yellow-700" />
         <CardHeader className="flex flex-row items-start justify-between gap-4">
           <div className="min-w-0">
             <CardTitle className="text-white truncate">
@@ -118,7 +118,7 @@ const SessionDetail = ({ sessionId, onDeleted }) => {
           </div>
           <Button
             variant="outline"
-            className="border-red-500/30 text-red-400 hover:bg-red-500/10"
+            className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
             onClick={deleteSession}
           >
             Delete
@@ -137,11 +137,11 @@ const SessionDetail = ({ sessionId, onDeleted }) => {
           questions.map((q, idx) => (
             <Card
               key={q._id}
-              className="bg-neutral-900/55 backdrop-blur border-neutral-800 hover:border-neutral-700 transition-colors"
+              className="bg-yellow-950/10 backdrop-blur border-yellow-500/20 hover:border-yellow-500/40 transition-colors"
             >
               <CardHeader className="pb-3">
                 <CardTitle className="text-white text-base leading-snug">
-                  <span className="text-gray-500 mr-2">Q{idx + 1}</span>
+                  <span className="text-yellow-500 mr-2">Q{idx + 1}</span>
                   {q.question}
                 </CardTitle>
               </CardHeader>
@@ -149,14 +149,14 @@ const SessionDetail = ({ sessionId, onDeleted }) => {
                 <div className="flex flex-wrap items-center gap-2">
                   <Button
                     variant="outline"
-                    className="border-neutral-700 bg-neutral-950/60 text-white hover:bg-neutral-800"
+                    className="border-yellow-500/30 bg-yellow-950/20 text-yellow-500 hover:bg-yellow-500 hover:text-black transition-colors"
                     onClick={() => toggleAnswer(q._id)}
                   >
                     {answerOpen[q._id] ? "Hide Answer" : "See Answer"}
                   </Button>
                   <Button
                     variant="outline"
-                    className="border-neutral-700 bg-neutral-950/60 text-white hover:bg-neutral-800"
+                    className="border-yellow-500/30 bg-yellow-950/20 text-yellow-500 hover:bg-yellow-500 hover:text-black transition-colors"
                     onClick={() => openExplanation(q)}
                   >
                     Explanation

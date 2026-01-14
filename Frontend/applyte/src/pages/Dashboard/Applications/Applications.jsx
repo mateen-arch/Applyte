@@ -114,7 +114,7 @@ const Applications = () => {
           </div>
           <Button
             onClick={() => setIsAddDialogOpen(true)}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+            className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Application
@@ -140,8 +140,8 @@ const Applications = () => {
               onClick={() => setFilterStatus(status)}
               className={
                 filterStatus === status
-                  ? "bg-purple-600 hover:bg-purple-700 text-white"
-                  : "border-neutral-700 text-gray-300 hover:bg-neutral-800"
+                  ? "bg-yellow-500 text-black font-medium hover:bg-yellow-600 border border-yellow-500"
+                  : "bg-black text-white border border-neutral-800 hover:bg-neutral-900"
               }
             >
               {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -187,7 +187,7 @@ const Applications = () => {
                   </p>
                   <Button
                     onClick={fetchApplications}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
                   >
                     <AlertCircle className="w-4 h-4 mr-2" />
                     Try Again
@@ -216,7 +216,7 @@ const Applications = () => {
                   {filterStatus === "all" && (
                     <Button
                       onClick={() => setIsAddDialogOpen(true)}
-                      className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                      className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Add Your First Application

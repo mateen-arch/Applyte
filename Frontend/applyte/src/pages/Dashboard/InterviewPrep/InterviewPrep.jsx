@@ -2,12 +2,19 @@ import { useState } from "react";
 import Sessions from "./Sessions";
 import SessionDetail from "./SessionDetail";
 import { Button } from "@/components/ui/button";
+import PremiumFeature from "@/components/PremiumFeature/PremiumFeature";
+import { Store } from "@/store/store";
 
 const InterviewPrep = () => {
   const [selectedSessionId, setSelectedSessionId] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const { user } = Store();
 
-  return (
+  // Check if user has premium access
+  const isPremium = user?.plan?.slug === "pro" || user?.plan?.slug === "business" ||
+    user?.subscription?.plan === "pro" || user?.subscription?.plan === "business";
+
+  const interviewPrepContent = (
     <div className="flex-1 overflow-y-auto bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between gap-4 mb-6">
@@ -22,7 +29,7 @@ const InterviewPrep = () => {
           {selectedSessionId && (
             <Button
               variant="outline"
-              className="border-neutral-700 bg-neutral-900 text-white hover:bg-neutral-800"
+              className="border-yellow-500/50 text-yellow-500 hover:bg-yellow-500 hover:text-black transition-colors"
               onClick={() => setSelectedSessionId(null)}
             >
               Back to Sessions
@@ -47,6 +54,17 @@ const InterviewPrep = () => {
         )}
       </div>
     </div>
+  );
+
+  return (
+    <PremiumFeature
+      isPremium={isPremium}
+      featureName="Interview Preparation"
+      description="Unlock AI-powered interview preparation with custom practice sessions"
+      className="flex-1"
+    >
+      {interviewPrepContent}
+    </PremiumFeature>
   );
 };
 

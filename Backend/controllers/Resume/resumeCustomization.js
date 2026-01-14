@@ -56,7 +56,23 @@ const getResumeSuggestions = async (req, res) => {
 
     // Parse AI response
     const cleanJSON = extractJsonStringAdvanced(aiResponse);
-    const suggestions = JSON.parse(cleanJSON);
+    let suggestions;
+    try {
+      suggestions = JSON.parse(cleanJSON);
+    } catch (parseError) {
+      console.warn("Initial JSON parse failed, attempting repair...", parseError.message);
+      // Attempt to fix common JSON errors like trailing commas
+      const repairedJSON = cleanJSON
+        .replace(/,\s*}/g, "}")
+        .replace(/,\s*]/g, "]");
+      try {
+        suggestions = JSON.parse(repairedJSON);
+      } catch (retryError) {
+        console.error("Repaired JSON parse failed:", retryError.message);
+        console.error("Failed JSON content:", cleanJSON);
+        throw new Error("Failed to parse AI response");
+      }
+    }
 
     return res.status(200).json({
       success: true,
@@ -125,17 +141,17 @@ const updateResumeWithSuggestion = async (req, res) => {
     const updateResumeField = (obj, path, value) => {
       // Convert to plain object if it's a Mongoose document
       const plainObj = obj.toObject ? obj.toObject() : JSON.parse(JSON.stringify(obj));
-      
+
       // Parse path: handle both dot notation and bracket notation
       const parts = path.split(/[\[\]\.]/).filter(p => p !== "");
-      
+
       let current = plainObj;
-      
+
       // Navigate to the parent of the target field
       for (let i = 0; i < parts.length - 1; i++) {
         const key = parts[i];
         const nextKey = parts[i + 1];
-        
+
         // Check if current key points to an array
         if (Array.isArray(current[key])) {
           const index = parseInt(nextKey);
@@ -160,7 +176,7 @@ const updateResumeWithSuggestion = async (req, res) => {
           current = current[key];
         }
       }
-      
+
       // Set the value
       const lastKey = parts[parts.length - 1];
       if (Array.isArray(current)) {
@@ -172,7 +188,7 @@ const updateResumeWithSuggestion = async (req, res) => {
       } else {
         current[lastKey] = value;
       }
-      
+
       return plainObj;
     };
 

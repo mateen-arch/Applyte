@@ -5,15 +5,34 @@ import { cn } from "@/lib/utils"
 // Select Root - Context provider for value and onChange
 const SelectContext = React.createContext({
   value: "",
-  onValueChange: () => {},
+  onValueChange: () => { },
+  items: [],
 })
 
 const Select = ({ value, onValueChange, children, ...props }) => {
   const [internalValue, setInternalValue] = React.useState(value || "")
+  const [items, setItems] = React.useState([])
 
   React.useEffect(() => {
     setInternalValue(value || "")
   }, [value])
+
+  // Extract items from children to handle sibling structure (Select -> SelectTrigger + SelectContent)
+  React.useEffect(() => {
+    const contentChild = React.Children.toArray(children).find(
+      (child) => React.isValidElement(child) && child.type === SelectContent
+    )
+
+    if (contentChild) {
+      const extractedItems = React.Children.toArray(contentChild.props.children)
+        .filter((child) => React.isValidElement(child) && child.type === SelectItem)
+        .map(child => ({
+          value: child.props.value,
+          label: child.props.children
+        }))
+      setItems(extractedItems)
+    }
+  }, [children])
 
   const handleValueChange = (newValue) => {
     setInternalValue(newValue)
@@ -23,7 +42,7 @@ const Select = ({ value, onValueChange, children, ...props }) => {
   }
 
   return (
-    <SelectContext.Provider value={{ value: internalValue, onValueChange: handleValueChange }}>
+    <SelectContext.Provider value={{ value: internalValue, onValueChange: handleValueChange, items }}>
       {children}
     </SelectContext.Provider>
   )
@@ -40,39 +59,28 @@ const SelectValue = ({ placeholder }) => {
 
 // SelectTrigger - the actual select element
 const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) => {
-  const { value, onValueChange } = React.useContext(SelectContext)
-  
-  // Extract options from SelectContent
-  const contentChild = React.Children.toArray(children).find(
-    (child) => React.isValidElement(child) && child.type === SelectContent
-  )
-  
-  const items = contentChild
-    ? React.Children.toArray(contentChild.props.children).filter(
-        (child) => React.isValidElement(child) && child.type === SelectItem
-      )
-    : []
+  const { value, onValueChange, items } = React.useContext(SelectContext)
 
   return (
-    <div className="relative">
+    <div className="relative group">
       <select
         ref={ref}
         value={value || ""}
         onChange={(e) => onValueChange(e.target.value)}
         className={cn(
-          "flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none cursor-pointer pr-8",
-          "dark:bg-input/30",
+          "flex h-10 w-full items-center justify-between rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 appearance-none cursor-pointer pr-10 transition-all duration-200 hover:border-neutral-600 text-white",
           className
         )}
         {...props}
       >
+        <option value="" disabled className="bg-neutral-900 text-gray-500">Select an option</option>
         {items.map((item, index) => (
-          <option key={index} value={item.props.value}>
-            {item.props.children}
+          <option key={index} value={item.value} className="bg-neutral-900 text-white py-2">
+            {item.label}
           </option>
         ))}
       </select>
-      <ChevronDownIcon className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50 pointer-events-none" />
+      <ChevronDownIcon className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 pointer-events-none transition-transform duration-200 group-hover:text-white" />
     </div>
   )
 })
@@ -80,8 +88,8 @@ SelectTrigger.displayName = "SelectTrigger"
 
 // SelectContent - wrapper that doesn't render but holds items
 const SelectContent = ({ className, children, ...props }) => {
-  // Return children so they can be extracted by SelectTrigger
-  return <>{children}</>
+  // Return null so it doesn't render in the DOM, but its props are still accessible via React.Children in Select
+  return null
 }
 
 // SelectLabel wrapper
@@ -92,7 +100,7 @@ SelectLabel.displayName = "SelectLabel"
 
 // SelectItem - represents an option
 const SelectItem = React.forwardRef(({ className, children, value, ...props }, ref) => {
-  // Return a fragment so it can be extracted by SelectTrigger
+  // Return a fragment so it can be extracted by Select
   return <>{children}</>
 })
 SelectItem.displayName = "SelectItem"

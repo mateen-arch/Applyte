@@ -37,7 +37,7 @@ const JobCard = ({ job }) => {
   const location = job.job_city && job.job_country
     ? `${job.job_city}, ${job.job_country}`
     : job.job_city || job.job_country || job.location || "Location not specified";
-  
+
   // Determine job type (Remote/Onsite/Hybrid)
   const getJobType = () => {
     if (job.job_is_remote) return "Remote";
@@ -99,46 +99,44 @@ const JobCard = ({ job }) => {
   const salary = formatSalary();
 
   return (
-    <Card className="bg-neutral-900 border border-neutral-800 hover:border-neutral-700 transition-all duration-200">
-      <CardHeader>
+    <Card className="bg-yellow-950/20 border-yellow-500/30 hover:border-yellow-500/60 hover:bg-yellow-950/30 transition-all duration-300 group relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-yellow-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <CardHeader className="relative z-10">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <CardTitle className="text-white text-xl mb-3 line-clamp-2">
               {title}
             </CardTitle>
-            
+
             <div className="flex flex-wrap items-center gap-3 text-sm text-gray-400 mb-3">
               {company && (
                 <div className="flex items-center gap-1.5">
-                  <Building2 className="w-4 h-4 flex-shrink-0" />
+                  <Building2 className="w-4 h-4 flex-shrink-0 text-yellow-500" />
                   <span className="truncate">{company}</span>
                 </div>
               )}
-              
+
               {location && (
                 <div className="flex items-center gap-1.5">
-                  <MapPin className="w-4 h-4 flex-shrink-0" />
+                  <MapPin className="w-4 h-4 flex-shrink-0 text-yellow-500" />
                   <span className="truncate">{location}</span>
                 </div>
               )}
-              
+
               <Badge
                 variant="outline"
-                className={`border ${
-                  jobType === "Remote"
-                    ? "border-green-500/50 text-green-400 bg-green-500/10"
-                    : jobType === "Hybrid"
-                    ? "border-blue-500/50 text-blue-400 bg-blue-500/10"
-                    : "border-gray-500/50 text-gray-400 bg-gray-500/10"
-                }`}
+                className={`border ${jobType === "Remote"
+                  ? "border-yellow-500/30 text-yellow-500 bg-yellow-500/5"
+                  : "border-neutral-800 text-gray-400 bg-neutral-900"
+                  }`}
               >
                 <Briefcase className="w-3 h-3 mr-1" />
                 {jobType}
               </Badge>
-              
+
               <Badge
                 variant="outline"
-                className="border-purple-500/50 text-purple-400 bg-purple-500/10"
+                className="border-neutral-800 text-gray-300 bg-neutral-900"
               >
                 <Globe className="w-3 h-3 mr-1" />
                 {platform}
@@ -164,7 +162,7 @@ const JobCard = ({ job }) => {
           {applyUrl && (
             <Button
               onClick={() => setIsApplyDialogOpen(true)}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white flex-shrink-0"
+              className="bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 text-black font-medium flex-shrink-0"
             >
               <ExternalLink className="w-4 h-4 mr-2" />
               Apply Now
@@ -181,9 +179,8 @@ const JobCard = ({ job }) => {
                 Job Description
               </h3>
               <div
-                className={`text-gray-300 text-sm ${
-                  isExpanded ? "" : "line-clamp-4"
-                } transition-all duration-200`}
+                className={`text-gray-300 text-sm ${isExpanded ? "" : "line-clamp-4"
+                  } transition-all duration-200`}
                 style={{
                   maxHeight: isExpanded ? "none" : "6rem",
                   overflow: "hidden",
@@ -224,7 +221,7 @@ const JobCard = ({ job }) => {
                     <Badge
                       key={idx}
                       variant="outline"
-                      className="border-purple-500/30 text-purple-300 bg-purple-500/10 text-xs"
+                      className="border-yellow-500/30 text-yellow-500 bg-yellow-500/5 text-xs"
                     >
                       {skill}
                     </Badge>
@@ -232,7 +229,7 @@ const JobCard = ({ job }) => {
                   {job.job_required_skills.length > 8 && (
                     <Badge
                       variant="outline"
-                      className="border-gray-500/30 text-gray-400 bg-gray-500/10 text-xs"
+                      className="border-neutral-800 text-gray-400 bg-neutral-900 text-xs"
                     >
                       +{job.job_required_skills.length - 8} more
                     </Badge>

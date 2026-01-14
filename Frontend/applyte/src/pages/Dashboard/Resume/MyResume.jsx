@@ -126,10 +126,10 @@ const MyResume = () => {
         </div>
 
         {/* Upload Section */}
-        <Card className="bg-neutral-900 border border-neutral-800 mb-8">
+        <Card className="bg-yellow-950/20 border-yellow-500/30 mb-8">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
-              <Upload className="w-5 h-5" />
+              <Upload className="w-5 h-5 text-yellow-500" />
               Upload Resume
             </CardTitle>
             <CardDescription className="text-gray-400">
@@ -147,11 +147,11 @@ const MyResume = () => {
             <div className="space-y-4">
               <div
                 onClick={handleFileSelect}
-                className="border-2 border-dashed border-neutral-700 rounded-xl p-12 text-center cursor-pointer hover:border-neutral-600 transition-colors"
+                className="border-2 border-dashed border-neutral-700 rounded-xl p-12 text-center cursor-pointer hover:border-yellow-500/50 transition-colors"
               >
                 <div className="flex flex-col items-center gap-4">
-                  <div className="p-4 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 bg-opacity-10 border border-blue-500/20">
-                    <FileText className="w-8 h-8 text-blue-400" />
+                  <div className="p-4 rounded-full bg-yellow-500/10 border border-yellow-500/20">
+                    <FileText className="w-8 h-8 text-yellow-500" />
                   </div>
                   <div>
                     <p className="text-white font-medium mb-1">
@@ -166,7 +166,7 @@ const MyResume = () => {
                       e.stopPropagation();
                       handleFileSelect();
                     }}
-                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
+                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
                     disabled={isUploading}
                   >
                     {isUploading ? (
@@ -190,7 +190,7 @@ const MyResume = () => {
                     <span className="text-gray-400">Uploading...</span>
                     <span className="text-gray-400">{uploadProgress}%</span>
                   </div>
-                  <Progress value={uploadProgress} className="h-2" />
+                  <Progress value={uploadProgress} className="h-2 bg-neutral-800" indicatorClassName="bg-yellow-500" />
                 </div>
               )}
             </div>
@@ -208,12 +208,12 @@ const MyResume = () => {
             </CardContent>
           </Card>
         ) : resume ? (
-          <Card className="bg-neutral-900 border border-neutral-800">
+          <Card className="bg-yellow-950/20 border-yellow-500/30">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-white flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-400" />
+                    <CheckCircle2 className="w-5 h-5 text-yellow-500" />
                     Resume Analyzed
                   </CardTitle>
                   <CardDescription className="text-gray-400">
@@ -222,7 +222,7 @@ const MyResume = () => {
                 </div>
                 <Button
                   variant="outline"
-                  className="border-neutral-700 text-gray-300 hover:bg-neutral-800"
+                  className="border-yellow-500/50 text-yellow-500 hover:bg-yellow-500 hover:text-black transition-colors"
                 >
                   <Download className="w-4 h-4 mr-2" />
                   Download
@@ -280,7 +280,7 @@ const MyResume = () => {
                       {resume.skills.map((skill, index) => (
                         <span
                           key={index}
-                          className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-sm"
+                          className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 text-sm"
                         >
                           {skill}
                         </span>

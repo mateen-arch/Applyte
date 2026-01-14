@@ -185,102 +185,102 @@ const Profile = () => {
   };
 
   const handleUpdateInfo = async () => {
-  // Trim inputs
-  const trimmedUsername = userInfo.username.trim();
-  const trimmedEmail = userInfo.email.trim();
+    // Trim inputs
+    const trimmedUsername = userInfo.username.trim();
+    const trimmedEmail = userInfo.email.trim();
 
-  // Backend allows updating one field at a time
-  // So we don't need to require both fields
+    // Backend allows updating one field at a time
+    // So we don't need to require both fields
 
-  // Check if nothing changed
-  const usernameUnchanged = trimmedUsername === user.username;
-  const emailUnchanged = trimmedEmail === user.email;
-  
-  if (usernameUnchanged && emailUnchanged) {
-    toast.error("No changes to update.");
-    return;
-  }
+    // Check if nothing changed
+    const usernameUnchanged = trimmedUsername === user.username;
+    const emailUnchanged = trimmedEmail === user.email;
 
-  // Validate email if provided and different
-  if (trimmedEmail && !emailUnchanged) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(trimmedEmail)) {
-      toast.error("Please enter a valid email address.");
+    if (usernameUnchanged && emailUnchanged) {
+      toast.error("No changes to update.");
       return;
     }
-  }
 
-  // Validate username if provided and different
-  if (trimmedUsername && !usernameUnchanged) {
-    if (trimmedUsername.length < 3) {
-      toast.error("Username must be at least 3 characters.");
-      return;
-    }
-  }
-
-  // Prepare payload - send only what's provided
-  const updatePayload = {};
-  
-  if (trimmedUsername && !usernameUnchanged) {
-    updatePayload.username = trimmedUsername;
-  }
-  
-  if (trimmedEmail && !emailUnchanged) {
-    updatePayload.email = trimmedEmail;
-  }
-
-  // If payload is empty after checks, return
-  if (Object.keys(updatePayload).length === 0) {
-    toast.error("No changes to update.");
-    return;
-  }
-
-  try {
-    setIsUpdating(true);
-    
-    const res = await axios.put(
-      `${base_url}/user/auth/update-info`,
-      updatePayload,
-      {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
+    // Validate email if provided and different
+    if (trimmedEmail && !emailUnchanged) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(trimmedEmail)) {
+        toast.error("Please enter a valid email address.");
+        return;
       }
-    );
-
-    if (res.data.success) {
-      toast.success(res.data.message || "Profile updated!");
-      
-      // Update state with new data
-      setUserInfo(prev => ({
-        ...prev,
-        username: res.data.User.username || prev.username,
-        email: res.data.User.email || prev.email,
-      }));
-      
-      setUser(prev => ({
-        ...prev,
-        username: res.data.User.username || prev.username,
-        email: res.data.User.email || prev.email,
-        image: res.data.User.image || prev.image,
-      }));
     }
-  } catch (error) {
-    console.log("Update error:", error);
-    
-    // Specific error handling
-    if (error.response?.status === 400) {
-      if (error.response?.data?.message === "Email already exists!") {
-        toast.error("This email is already registered. Please use a different one.");
+
+    // Validate username if provided and different
+    if (trimmedUsername && !usernameUnchanged) {
+      if (trimmedUsername.length < 3) {
+        toast.error("Username must be at least 3 characters.");
+        return;
+      }
+    }
+
+    // Prepare payload - send only what's provided
+    const updatePayload = {};
+
+    if (trimmedUsername && !usernameUnchanged) {
+      updatePayload.username = trimmedUsername;
+    }
+
+    if (trimmedEmail && !emailUnchanged) {
+      updatePayload.email = trimmedEmail;
+    }
+
+    // If payload is empty after checks, return
+    if (Object.keys(updatePayload).length === 0) {
+      toast.error("No changes to update.");
+      return;
+    }
+
+    try {
+      setIsUpdating(true);
+
+      const res = await axios.put(
+        `${base_url}/user/auth/update-info`,
+        updatePayload,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (res.data.success) {
+        toast.success(res.data.message || "Profile updated!");
+
+        // Update state with new data
+        setUserInfo(prev => ({
+          ...prev,
+          username: res.data.User.username || prev.username,
+          email: res.data.User.email || prev.email,
+        }));
+
+        setUser(prev => ({
+          ...prev,
+          username: res.data.User.username || prev.username,
+          email: res.data.User.email || prev.email,
+          image: res.data.User.image || prev.image,
+        }));
+      }
+    } catch (error) {
+      console.log("Update error:", error);
+
+      // Specific error handling
+      if (error.response?.status === 400) {
+        if (error.response?.data?.message === "Email already exists!") {
+          toast.error("This email is already registered. Please use a different one.");
+        } else {
+          toast.error(error.response.data.message || "Update failed.");
+        }
       } else {
-        toast.error(error.response.data.message || "Update failed.");
+        toast.error("Failed to update profile. Please try again.");
       }
-    } else {
-      toast.error("Failed to update profile. Please try again.");
+    } finally {
+      setIsUpdating(false);
     }
-  } finally {
-    setIsUpdating(false);
-  }
-};
+  };
 
   const handleDeleteAccount = async () => {
     try {
@@ -325,16 +325,16 @@ const Profile = () => {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <Avatar className="w-24 h-24 border-4 border-white/10 shadow-2xl">
+              <Avatar className="w-24 h-24 border-4 border-yellow-500/20 shadow-2xl">
                 {imagePreview ? (
                   <AvatarImage src={imagePreview} className="object-cover" />
                 ) : null}
-                <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-3xl font-bold">
+                <AvatarFallback className="bg-gradient-to-br from-yellow-500 to-yellow-600 text-3xl font-bold text-black">
                   {user.username?.charAt(0)?.toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
-              <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                <User className="w-5 h-5 text-white" />
+              <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center shadow-lg">
+                <User className="w-5 h-5 text-black" />
               </div>
             </div>
             <div>
@@ -345,7 +345,7 @@ const Profile = () => {
                 <Mail className="w-4 h-4" />
                 {user.email}
               </p>
-              <Badge className="mt-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700">
+              <Badge className="mt-2 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black">
                 Active User
               </Badge>
             </div>
@@ -356,10 +356,10 @@ const Profile = () => {
           {/* Left Column - Profile Image & Info */}
           <div className="lg:col-span-2 space-y-8">
             {/* Profile Image Upload Card */}
-            <Card className="bg-gradient-to-br from-gray-900/80 to-black/80 border-gray-800/50 backdrop-blur-sm shadow-2xl">
+            <Card className="bg-yellow-950/20 border-yellow-500/30 backdrop-blur-sm shadow-2xl">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-xl text-white">
-                  <Camera className="w-5 h-5 text-blue-400" />
+                  <Camera className="w-5 h-5 text-yellow-500" />
                   Profile Picture
                 </CardTitle>
                 <CardDescription className="text-gray-400">
@@ -369,14 +369,14 @@ const Profile = () => {
               <CardContent className="space-y-6">
                 <div className="flex flex-col md:flex-row items-center gap-8">
                   <div className="relative group">
-                    <Avatar className="w-32 h-32 border-4 border-white/10 shadow-xl transition-all duration-300 group-hover:scale-105 group-hover:border-blue-500/50">
+                    <Avatar className="w-32 h-32 border-4 border-yellow-500/20 shadow-xl transition-all duration-300 group-hover:scale-105 group-hover:border-yellow-500/50">
                       {imagePreview ? (
                         <AvatarImage
                           src={imagePreview}
                           className="object-cover"
                         />
                       ) : null}
-                      <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-4xl font-bold">
+                      <AvatarFallback className="bg-gradient-to-br from-yellow-500 to-yellow-600 text-4xl font-bold text-black">
                         {user.username?.charAt(0)?.toUpperCase() || "U"}
                       </AvatarFallback>
                     </Avatar>
@@ -389,7 +389,7 @@ const Profile = () => {
                         type="file"
                         accept="image/*"
                         onChange={handleImageChange}
-                        className="bg-gray-900/50 border-gray-700 text-white file:bg-gradient-to-r file:from-blue-600 file:to-purple-600 file:text-white file:border-0 file:rounded-md file:px-4 file:py-2"
+                        className="bg-gray-900/50 border-gray-700 text-white file:bg-gradient-to-r file:from-yellow-500 file:to-yellow-600 file:text-black file:border-0 file:rounded-md file:px-4 file:py-2"
                       />
 
                       {uploadProgress > 0 && (
@@ -397,6 +397,7 @@ const Profile = () => {
                           <Progress
                             value={uploadProgress}
                             className="h-2 bg-gray-800"
+                            indicatorClassName="bg-yellow-500"
                           />
                           <p className="text-sm text-gray-400 text-right">
                             {uploadProgress}% uploaded
@@ -410,7 +411,7 @@ const Profile = () => {
                         disabled={
                           isUploading || !fileInputRef.current?.files?.length
                         }
-                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                        className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
                       >
                         {isUploading ? (
                           <>
@@ -431,10 +432,10 @@ const Profile = () => {
             </Card>
 
             {/* Profile Information Card */}
-            <Card className="bg-gradient-to-br from-gray-900/80 to-black/80 border-gray-800/50 backdrop-blur-sm shadow-2xl">
+            <Card className="bg-yellow-950/20 border-yellow-500/30 backdrop-blur-sm shadow-2xl">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-xl text-white">
-                  <User className="w-5 h-5 text-green-400" />
+                  <User className="w-5 h-5 text-yellow-500" />
                   Personal Information
                 </CardTitle>
                 <CardDescription className="text-gray-400">
@@ -456,7 +457,7 @@ const Profile = () => {
                           username: e.target.value,
                         }))
                       }
-                      className="bg-gray-900/50 border-gray-700 text-white"
+                      className="bg-gray-900/50 border-gray-700 text-white focus:border-yellow-500/50"
                       placeholder="Your username"
                     />
                   </div>
@@ -474,7 +475,7 @@ const Profile = () => {
                           email: e.target.value,
                         }))
                       }
-                      className="bg-gray-900/50 border-gray-700 text-white"
+                      className="bg-gray-900/50 border-gray-700 text-white focus:border-yellow-500/50"
                       placeholder="Your email"
                     />
                   </div>
@@ -485,7 +486,7 @@ const Profile = () => {
                     type="button"
                     onClick={handleUpdateInfo}
                     disabled={isUpdating}
-                    className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8"
+                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium px-8"
                   >
                     {isUpdating ? (
                       <>
@@ -507,10 +508,10 @@ const Profile = () => {
           {/* Right Column - Stats & Danger Zone */}
           <div className="space-y-8">
             {/* Documents Stats Card */}
-            <Card className="bg-gradient-to-br from-gray-900/80 to-black/80 border-gray-800/50 backdrop-blur-sm shadow-2xl">
+            <Card className="bg-yellow-950/20 border-yellow-500/30 backdrop-blur-sm shadow-2xl">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-xl text-white">
-                  <FileText className="w-5 h-5 text-blue-400" />
+                  <FileText className="w-5 h-5 text-yellow-500" />
                   Documents Generated
                 </CardTitle>
                 <CardDescription className="text-gray-400">
@@ -521,8 +522,8 @@ const Profile = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center p-4 bg-gray-900/50 rounded-lg hover:bg-gray-800/50 transition-colors">
                     <div className="flex items-center justify-center mb-2">
-                      <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
-                        <FileText className="w-6 h-6 text-blue-400" />
+                      <div className="w-12 h-12 bg-yellow-500/10 rounded-full flex items-center justify-center">
+                        <FileText className="w-6 h-6 text-yellow-500" />
                       </div>
                     </div>
                     <p className="text-3xl font-bold text-white">
@@ -533,8 +534,8 @@ const Profile = () => {
 
                   <div className="text-center p-4 bg-gray-900/50 rounded-lg hover:bg-gray-800/50 transition-colors">
                     <div className="flex items-center justify-center mb-2">
-                      <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
-                        <FileEdit className="w-6 h-6 text-green-400" />
+                      <div className="w-12 h-12 bg-yellow-500/10 rounded-full flex items-center justify-center">
+                        <FileEdit className="w-6 h-6 text-yellow-500" />
                       </div>
                     </div>
                     <p className="text-3xl font-bold text-white">
@@ -545,8 +546,8 @@ const Profile = () => {
 
                   <div className="text-center p-4 bg-gray-900/50 rounded-lg hover:bg-gray-800/50 transition-colors col-span-2">
                     <div className="flex items-center justify-center mb-2">
-                      <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center">
-                        <Briefcase className="w-6 h-6 text-purple-400" />
+                      <div className="w-12 h-12 bg-yellow-500/10 rounded-full flex items-center justify-center">
+                        <Briefcase className="w-6 h-6 text-yellow-500" />
                       </div>
                     </div>
                     <p className="text-3xl font-bold text-white">

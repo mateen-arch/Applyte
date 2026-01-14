@@ -33,37 +33,29 @@ const ApplicationAnalytics = ({ analytics }) => {
       label: "Total Applications",
       value: totalApplications,
       icon: Briefcase,
-      color: "text-blue-400",
-      bgColor: "bg-blue-500/10",
     },
     {
       label: "Interviews",
       value: interviews,
       icon: TrendingUp,
-      color: "text-yellow-400",
-      bgColor: "bg-yellow-500/10",
     },
     {
       label: "Offers",
       value: offers,
       icon: CheckCircle2,
-      color: "text-green-400",
-      bgColor: "bg-green-500/10",
     },
     {
       label: "Rejected",
       value: rejected,
       icon: XCircle,
-      color: "text-red-400",
-      bgColor: "bg-red-500/10",
     },
   ];
 
   return (
-    <Card className="bg-gradient-to-br from-purple-900/20 to-pink-900/20 border-purple-800/50">
+    <Card className="bg-gradient-to-br from-red-950 to-black border-red-900/50">
       <CardHeader>
         <CardTitle className="text-white flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-purple-400" />
+          <BarChart3 className="w-5 h-5 text-red-500" />
           Application Analytics
         </CardTitle>
       </CardHeader>
@@ -74,15 +66,15 @@ const ApplicationAnalytics = ({ analytics }) => {
             return (
               <div
                 key={index}
-                className={`p-4 rounded-lg border border-neutral-700/50 ${stat.bgColor}`}
+                className="p-4 rounded-lg border border-yellow-600/50 bg-yellow-500"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <Icon className={`w-5 h-5 ${stat.color}`} />
-                  <span className={`text-2xl font-bold ${stat.color}`}>
+                  <Icon className="w-5 h-5 text-white" />
+                  <span className="text-2xl font-bold text-white">
                     {stat.value}
                   </span>
                 </div>
-                <p className="text-sm text-gray-400">{stat.label}</p>
+                <p className="text-sm text-white/90 font-medium">{stat.label}</p>
               </div>
             );
           })}
@@ -92,39 +84,39 @@ const ApplicationAnalytics = ({ analytics }) => {
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-300">Interview Rate</span>
-              <span className="text-sm font-semibold text-yellow-400">
+              <span className="text-sm font-semibold text-white">
                 {interviewRate}%
               </span>
             </div>
             <Progress
               value={parseFloat(interviewRate)}
-              className="h-2 bg-neutral-800"
+              className="h-2 bg-black [&>div]:bg-yellow-500"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-300">Offer Rate</span>
-              <span className="text-sm font-semibold text-green-400">
+              <span className="text-sm font-semibold text-white">
                 {offerRate}%
               </span>
             </div>
             <Progress
               value={parseFloat(offerRate)}
-              className="h-2 bg-neutral-800"
+              className="h-2 bg-black [&>div]:bg-yellow-500"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-300">Rejection Rate</span>
-              <span className="text-sm font-semibold text-red-400">
+              <span className="text-sm font-semibold text-white">
                 {rejectionRate}%
               </span>
             </div>
             <Progress
               value={rejectionRate}
-              className="h-2 bg-neutral-800"
+              className="h-2 bg-black [&>div]:bg-yellow-500"
             />
           </div>
         </div>

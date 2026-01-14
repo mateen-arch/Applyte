@@ -6,10 +6,11 @@ import MyResume from "./Resume/MyResume";
 import JobSearch from "./JobSearch/jobsearch";
 import Applications from "./Applications/Applications";
 import InterviewPrep from "./InterviewPrep/InterviewPrep";
+import SkillGapAnalysis from "./SkillGapAnalysis/SkillGapAnalysis";
 
 const Dashboard = () => {
   const { activeComponent } = useSidebar();
-  
+
   const renderComponent = () => {
     switch (activeComponent) {
       case "dashboard":
@@ -22,15 +23,8 @@ const Dashboard = () => {
         return <Profile />;
       case "applications":
         return <Applications />;
-      case "cover-letters":
-        return (
-          <div className="flex-1 overflow-y-auto bg-black">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <h1 className="text-3xl font-bold text-white mb-4">Cover Letters</h1>
-              <p className="text-gray-400">Create and manage your cover letters here.</p>
-            </div>
-          </div>
-        );
+      case "skill-gap-analysis":
+        return <SkillGapAnalysis />;
       case "interview-prep":
         return <InterviewPrep />;
       default:

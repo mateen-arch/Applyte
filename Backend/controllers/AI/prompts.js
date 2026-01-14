@@ -118,14 +118,16 @@ ${JSON.stringify(resumeData, null, 2)}
 }
 
 **RULES:**
-1. Output must be strictly valid JSON
-2. Each suggestion must reference a specific field in the resume structure
-3. Provide actual suggested text, not just descriptions
-4. Prioritize suggestions (high = critical, medium = important, low = nice to have)
-5. Be specific and actionable - avoid generic advice
-6. Focus on improvements that will increase ATS score and interview chances
+1. Output must be strictly valid JSON. Do NOT use markdown code blocks (e.g. \`\`\`json).
+2. Do NOT include trailing commas in arrays or objects.
+3. Ensure all quotes are properly escaped.
+4. Each suggestion must reference a specific field in the resume structure.
+5. Provide actual suggested text, not just descriptions.
+6. Prioritize suggestions (high = critical, medium = important, low = nice to have).
+7. Be specific and actionable - avoid generic advice.
+8. Focus on improvements that will increase ATS score and interview chances.
 
-Now analyze this resume and provide personalized, actionable suggestions.`;
+Now analyze this resume and provide personalized, actionable suggestions. Return ONLY the raw JSON string.`;
 };
 
 const jobSearchQueryGeneratorPromt = (resumeData) => {
@@ -194,9 +196,37 @@ Add 1 hard skills tied to that role.)`;
   return prompt;
 };
 
+const skillGapAnalysisPrompt = (resumeSkills, jobDescription) => {
+  return `You are an expert career coach and technical recruiter. 
+  Analyze the gap between a candidate's skills and a job description.
+  
+  Candidate Skills: ${resumeSkills.join(", ")}
+  
+  Job Description:
+  ${jobDescription}
+  
+  Provide a detailed analysis in JSON format with the following structure:
+  {
+      "matchPercentage": number (0-100),
+      "matching": ["skill1", "skill2"],
+      "weak": ["skill1", "skill2"],
+      "missing": ["skill1", "skill2"],
+      "totalRequired": number,
+      "recommendations": [
+          {
+              "title": "Category Title",
+              "skills": ["skill1", "skill2"],
+              "action": "Specific actionable advice"
+          }
+      ]
+  }
+  
+  Strictly return ONLY the JSON object. Do not include markdown formatting like \`\`\`json.`;
+};
 
 module.exports = {
   resumeAnalyzerPrompt,
   jobSearchQueryGeneratorPromt,
   resumeCustomizationPrompt,
+  skillGapAnalysisPrompt,
 };

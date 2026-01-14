@@ -132,7 +132,7 @@ const Sessions = ({ onSelectSession, onSessionCreated }) => {
           </p>
         </div>
         <Button
-          className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
+          className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
           onClick={() => setOpen(true)}
         >
           Create Session
@@ -164,8 +164,8 @@ const Sessions = ({ onSelectSession, onSessionCreated }) => {
                 onClick={() => onSelectSession?.(s._id)}
                 className="text-left group"
               >
-                <Card className="relative overflow-hidden bg-neutral-900/60 backdrop-blur border-neutral-800 transition-all hover:border-neutral-700 hover:bg-neutral-900/85 hover:shadow-[0_18px_50px_rgba(0,0,0,0.55)]">
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-transparent" />
+                <Card className="relative overflow-hidden bg-yellow-950/20 backdrop-blur border-yellow-500/30 transition-all hover:border-yellow-500/60 hover:bg-yellow-950/30 hover:shadow-[0_18px_50px_rgba(234,179,8,0.1)]">
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-yellow-500/10 via-yellow-600/10 to-transparent" />
                   <CardHeader className="relative">
                     <CardTitle className="text-white truncate">
                       {s.role || "Session"}
@@ -271,7 +271,7 @@ const Sessions = ({ onSelectSession, onSessionCreated }) => {
               <Button
                 type="button"
                 variant="outline"
-                className="border-neutral-800 bg-neutral-950 text-white hover:bg-neutral-900"
+                className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
                 onClick={() => {
                   if (!creating) setOpen(false);
                 }}
@@ -282,11 +282,11 @@ const Sessions = ({ onSelectSession, onSessionCreated }) => {
               <Button
                 type="submit"
                 disabled={!canSubmit || creating}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
+                className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
               >
                 {creating ? (
                   <span className="flex items-center">
-                    <span className="w-4 h-4 border-2 border-white/70 border-t-transparent rounded-full animate-spin mr-2" />
+                    <span className="w-4 h-4 border-2 border-black/70 border-t-transparent rounded-full animate-spin mr-2" />
                     Creating...
                   </span>
                 ) : (

@@ -1,5 +1,5 @@
 import React from "react";
-import { 
+import {
   Upload, Search, FileText, Zap, RefreshCw, Bot, CheckCircle, ArrowRight, Sparkles
 } from "lucide-react";
 
@@ -38,7 +38,7 @@ const features = [
 
 const Features = () => {
   return (
-    <div className="relative py-24 bg-black text-white overflow-hidden">
+    <div id="features" className="relative py-24 bg-black text-white overflow-hidden">
       {/* Subtle grid background */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(40,40,40,0.3),transparent_70%)]"></div>
 
@@ -56,7 +56,7 @@ const Features = () => {
             </span>
           </h2>
           <p className="text-gray-400 mt-6 max-w-2xl mx-auto text-lg">
-            From resume optimization to personalized job matching and cover letter generation — 
+            From resume optimization to personalized job matching and cover letter generation —
             we handle the heavy lifting so you can focus on what matters.
           </p>
         </div>

@@ -70,22 +70,22 @@ const ApplicationCard = ({ application, onUpdate, onDelete }) => {
     const statusConfig = {
       applied: {
         label: "Applied",
-        className: "bg-blue-500/10 text-blue-400 border-blue-500/30",
+        className: "bg-neutral-900 text-gray-300 border-neutral-800",
         icon: Clock,
       },
       interview: {
         label: "Interview",
-        className: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30",
+        className: "bg-yellow-500/10 text-yellow-500 border-yellow-500/30",
         icon: Briefcase,
       },
       offer: {
         label: "Offer",
-        className: "bg-green-500/10 text-green-400 border-green-500/30",
+        className: "bg-white/10 text-white border-white/30",
         icon: CheckCircle2,
       },
       rejected: {
         label: "Rejected",
-        className: "bg-red-500/10 text-red-400 border-red-500/30",
+        className: "bg-neutral-900 text-gray-500 border-neutral-800",
         icon: XCircle,
       },
     };
@@ -154,10 +154,11 @@ const ApplicationCard = ({ application, onUpdate, onDelete }) => {
 
   return (
     <>
-      <Card className="bg-neutral-900 border border-neutral-800 hover:border-neutral-700 transition-all duration-200">
-        <CardHeader>
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1 min-w-0">
+      <Card className="bg-yellow-950/20 border-yellow-500/30 hover:border-yellow-500/60 hover:bg-yellow-950/30 transition-all duration-300 group relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-yellow-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <CardHeader className="relative z-10">
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+            <div className="flex-1 min-w-0 w-full">
               <CardTitle className="text-white text-xl mb-3 line-clamp-2">
                 {application.jobTitle}
               </CardTitle>
@@ -165,25 +166,25 @@ const ApplicationCard = ({ application, onUpdate, onDelete }) => {
               <div className="flex flex-wrap items-center gap-3 text-sm text-gray-400 mb-3">
                 {application.companyName && (
                   <div className="flex items-center gap-1.5">
-                    <Building2 className="w-4 h-4 flex-shrink-0" />
+                    <Building2 className="w-4 h-4 flex-shrink-0 text-yellow-500" />
                     <span className="truncate">{application.companyName}</span>
                   </div>
                 )}
 
                 {application.location && (
                   <div className="flex items-center gap-1.5">
-                    <MapPin className="w-4 h-4 flex-shrink-0" />
+                    <MapPin className="w-4 h-4 flex-shrink-0 text-yellow-500" />
                     <span className="truncate">{application.location}</span>
                   </div>
                 )}
 
                 <div className="flex items-center gap-1.5">
-                  <Globe className="w-4 h-4 flex-shrink-0" />
+                  <Globe className="w-4 h-4 flex-shrink-0 text-yellow-500" />
                   <span className="truncate">{application.jobPlatform}</span>
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 flex-shrink-0" />
+                  <Calendar className="w-4 h-4 flex-shrink-0 text-yellow-500" />
                   <span>Applied {formatDate(application.dateApplied)}</span>
                   {daysSinceApplied > 0 && (
                     <span className="text-gray-500">
@@ -196,13 +197,13 @@ const ApplicationCard = ({ application, onUpdate, onDelete }) => {
               <div className="flex items-center gap-2">
                 {getStatusBadge(application.status)}
                 {application.resumeVersion && (
-                  <Badge variant="outline" className="border-purple-500/30 text-purple-400 bg-purple-500/10">
+                  <Badge variant="outline" className="border-yellow-500/30 text-yellow-500 bg-yellow-500/5">
                     <FileText className="w-3 h-3 mr-1" />
                     Resume Tracked
                   </Badge>
                 )}
                 {application.coverLetter && application.coverLetter.trim() !== "" && (
-                  <Badge variant="outline" className="border-pink-500/30 text-pink-400 bg-pink-500/10">
+                  <Badge variant="outline" className="border-neutral-700 text-gray-300 bg-neutral-900">
                     <MessageSquare className="w-3 h-3 mr-1" />
                     Cover Letter
                   </Badge>
@@ -210,7 +211,7 @@ const ApplicationCard = ({ application, onUpdate, onDelete }) => {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end mt-4 sm:mt-0">
               {application.applicationUrl && (
                 <Button
                   variant="outline"
@@ -218,7 +219,7 @@ const ApplicationCard = ({ application, onUpdate, onDelete }) => {
                   onClick={() =>
                     window.open(application.applicationUrl, "_blank", "noopener,noreferrer")
                   }
-                  className="border-neutral-700 text-gray-300 hover:bg-neutral-800"
+                  className="bg-yellow-500 text-white hover:bg-yellow-600 border-none"
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
                   View Job
@@ -228,7 +229,7 @@ const ApplicationCard = ({ application, onUpdate, onDelete }) => {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsFollowUpOpen(true)}
-                className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10"
+                className="bg-yellow-500 text-white hover:bg-yellow-600 border-none"
               >
                 <MessageSquare className="w-4 h-4 mr-2" />
                 Follow-Up
@@ -237,7 +238,7 @@ const ApplicationCard = ({ application, onUpdate, onDelete }) => {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsEditDialogOpen(true)}
-                className="border-neutral-700 text-gray-300 hover:bg-neutral-800"
+                className="bg-yellow-500 text-white hover:bg-yellow-600 border-none"
               >
                 <Edit className="w-4 h-4" />
               </Button>
@@ -245,7 +246,7 @@ const ApplicationCard = ({ application, onUpdate, onDelete }) => {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsDeleteDialogOpen(true)}
-                className="border-red-500/30 text-red-400 hover:bg-red-500/10"
+                className="bg-yellow-500 text-white hover:bg-yellow-600 border-none"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>

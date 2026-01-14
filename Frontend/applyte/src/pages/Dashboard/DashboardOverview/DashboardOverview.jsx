@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { 
-  FileText, 
-  Mail, 
-  Briefcase, 
-  TrendingUp, 
-  Plus, 
+import {
+  FileText,
+  Mail,
+  Briefcase,
+  TrendingUp,
+  Plus,
   Upload,
   Search,
   FileCheck,
@@ -62,27 +62,27 @@ const DashboardOverview = () => {
       title: "Resumes",
       value: stats.resumes,
       icon: FileText,
-      color: "from-blue-500 to-cyan-500",
-      bgColor: "bg-blue-500/10",
-      borderColor: "border-blue-500/20",
+      color: "from-yellow-500 to-yellow-600",
+      bgColor: "bg-yellow-500/10",
+      borderColor: "border-yellow-500/30",
       action: () => setActiveComponent("resume"),
     },
     {
       title: "Cover Letters",
       value: stats.coverLetters,
       icon: Mail,
-      color: "from-purple-500 to-pink-500",
-      bgColor: "bg-purple-500/10",
-      borderColor: "border-purple-500/20",
+      color: "from-yellow-500 to-yellow-600",
+      bgColor: "bg-yellow-500/10",
+      borderColor: "border-yellow-500/30",
       action: () => setActiveComponent("cover-letters"),
     },
     {
       title: "Applications",
       value: stats.applications,
       icon: Briefcase,
-      color: "from-green-500 to-emerald-500",
-      bgColor: "bg-green-500/10",
-      borderColor: "border-green-500/20",
+      color: "from-yellow-500 to-yellow-600",
+      bgColor: "bg-yellow-500/10",
+      borderColor: "border-yellow-500/30",
       action: () => setActiveComponent("applications"),
     },
   ];
@@ -92,28 +92,28 @@ const DashboardOverview = () => {
       title: "Upload Resume",
       description: "Upload and analyze your resume",
       icon: Upload,
-      color: "from-blue-500 to-cyan-500",
+      color: "from-yellow-500 to-yellow-600",
       action: () => setActiveComponent("resume"),
     },
     {
       title: "Search Jobs",
       description: "Find jobs matching your resume",
       icon: Search,
-      color: "from-purple-500 to-pink-500",
+      color: "from-yellow-500 to-yellow-600",
       action: () => setActiveComponent("job-search"),
     },
     {
       title: "Create Cover Letter",
       description: "Generate a personalized cover letter",
       icon: FileCheck,
-      color: "from-green-500 to-emerald-500",
+      color: "from-yellow-500 to-yellow-600",
       action: () => setActiveComponent("cover-letters"),
     },
     {
       title: "Interview Prep",
       description: "Prepare for your next interview",
       icon: MessageSquare,
-      color: "from-orange-500 to-red-500",
+      color: "from-yellow-500 to-yellow-600",
       action: () => setActiveComponent("interview-prep"),
     },
   ];
@@ -225,7 +225,7 @@ const DashboardOverview = () => {
                     </p>
                     <Button
                       onClick={() => setActiveComponent("resume")}
-                      className="mt-4 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
+                      className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Get Started
@@ -235,8 +235,8 @@ const DashboardOverview = () => {
                   <div className="space-y-3">
                     {stats.resumes > 0 && (
                       <div className="flex items-center gap-3 p-3 rounded-lg bg-neutral-800/50 border border-neutral-700/50">
-                        <div className="p-2 rounded-lg bg-blue-500/10">
-                          <FileText className="w-4 h-4 text-blue-400" />
+                        <div className="p-2 rounded-lg bg-yellow-500/10">
+                          <FileText className="w-4 h-4 text-yellow-500" />
                         </div>
                         <div className="flex-1">
                           <p className="text-sm text-white">
@@ -248,7 +248,7 @@ const DashboardOverview = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => setActiveComponent("resume")}
-                          className="text-gray-400 hover:text-white"
+                          className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
                         >
                           <ArrowRight className="w-4 h-4" />
                         </Button>
@@ -256,8 +256,8 @@ const DashboardOverview = () => {
                     )}
                     {stats.applications > 0 && (
                       <div className="flex items-center gap-3 p-3 rounded-lg bg-neutral-800/50 border border-neutral-700/50">
-                        <div className="p-2 rounded-lg bg-green-500/10">
-                          <Briefcase className="w-4 h-4 text-green-400" />
+                        <div className="p-2 rounded-lg bg-yellow-500/10">
+                          <Briefcase className="w-4 h-4 text-yellow-500" />
                         </div>
                         <div className="flex-1">
                           <p className="text-sm text-white">
@@ -269,7 +269,7 @@ const DashboardOverview = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => setActiveComponent("applications")}
-                          className="text-gray-400 hover:text-white"
+                          className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
                         >
                           <ArrowRight className="w-4 h-4" />
                         </Button>
@@ -294,7 +294,7 @@ const DashboardOverview = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="p-4 rounded-lg bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
+                <div className="p-4 rounded-lg bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/20">
                   <h4 className="text-sm font-semibold text-white mb-1">
                     Optimize Your Resume
                   </h4>
@@ -302,7 +302,7 @@ const DashboardOverview = () => {
                     Use our AI-powered resume analyzer to improve your resume and increase your chances of getting noticed.
                   </p>
                 </div>
-                <div className="p-4 rounded-lg bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
+                <div className="p-4 rounded-lg bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/20">
                   <h4 className="text-sm font-semibold text-white mb-1">
                     Personalized Cover Letters
                   </h4>
@@ -310,7 +310,7 @@ const DashboardOverview = () => {
                     Create tailored cover letters for each job application to stand out from other candidates.
                   </p>
                 </div>
-                <div className="p-4 rounded-lg bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
+                <div className="p-4 rounded-lg bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/20">
                   <h4 className="text-sm font-semibold text-white mb-1">
                     Smart Job Matching
                   </h4>

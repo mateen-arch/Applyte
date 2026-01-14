@@ -68,10 +68,10 @@ const Pricing = () => {
   };
 
   return (
-    <div className="relative py-24 bg-black text-white overflow-hidden">
+    <div id="pricing" className="relative py-24 bg-black text-white overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(60,60,60,0.3),transparent_70%)]"></div>
-      
+
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -97,11 +97,10 @@ const Pricing = () => {
             return (
               <div
                 key={index}
-                className={`group relative p-6 rounded-2xl bg-gradient-to-br from-neutral-900 to-neutral-950 border transition-all duration-500 overflow-hidden ${
-                  plan.popular 
-                    ? "border-yellow-400/50 shadow-[0_0_30px_rgba(250,204,21,0.1)]" 
-                    : "border-neutral-800 hover:border-neutral-600"
-                }`}
+                className={`group relative p-6 rounded-2xl bg-gradient-to-br from-neutral-900 to-neutral-950 border transition-all duration-500 overflow-hidden ${plan.popular
+                  ? "border-yellow-400/50 shadow-[0_0_30px_rgba(250,204,21,0.1)]"
+                  : "border-neutral-800 hover:border-neutral-600"
+                  }`}
               >
                 {/* Popular Badge */}
                 {plan.popular && (
@@ -122,7 +121,7 @@ const Pricing = () => {
                     <h3 className="text-xl font-bold text-gray-200">{plan.name}</h3>
                   </div>
                   <p className="text-gray-400 text-sm mb-4">{plan.description}</p>
-                  
+
                   {/* Price */}
                   <div className="mb-2">
                     <span className="text-3xl font-bold text-white">{plan.price}</span>
@@ -139,7 +138,7 @@ const Pricing = () => {
                 <div className="space-y-3 mb-6">
                   {plan.features.map((feature, featureIndex) => (
                     <div key={featureIndex} className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                      <Check className="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" />
                       <span className="text-gray-300 text-sm">{feature}</span>
                     </div>
                   ))}
@@ -148,11 +147,10 @@ const Pricing = () => {
                 {/* CTA Button */}
                 <button
                   onClick={() => handlePlanClick(plan.name)}
-                  className={`w-full py-2.5 px-4 rounded-lg font-semibold text-sm transition-all duration-300 ${
-                    plan.buttonVariant === "primary"
-                      ? "bg-white text-black hover:bg-gray-100 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
-                      : "bg-transparent border border-neutral-700 text-white hover:bg-neutral-800 hover:border-neutral-600"
-                  }`}
+                  className={`w-full py-2.5 px-4 rounded-lg font-semibold text-sm transition-all duration-300 ${plan.buttonVariant === "primary"
+                    ? "bg-white text-black hover:bg-gray-100 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                    : "bg-transparent border border-neutral-700 text-white hover:bg-neutral-800 hover:border-neutral-600"
+                    }`}
                 >
                   {plan.buttonText}
                 </button>
@@ -169,11 +167,11 @@ const Pricing = () => {
               No hidden fees
             </div>
             <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-green-400" />
+              <Check className="w-4 h-4 text-yellow-400" />
               Cancel anytime
             </div>
             <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-green-400" />
+              <Check className="w-4 h-4 text-yellow-400" />
               Secure payment
             </div>
           </div>

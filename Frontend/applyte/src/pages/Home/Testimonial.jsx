@@ -54,10 +54,10 @@ const testimonials = [
 
 const Testimonial = () => {
   return (
-    <div className="relative py-24 bg-black text-white overflow-hidden">
+    <div id="testimonials" className="relative py-24 bg-black text-white overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,rgba(60,60,60,0.2),transparent_70%)]"></div>
-      
+
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">

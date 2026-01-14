@@ -1,8 +1,11 @@
 import { cn } from "@/lib/util";
 import React from "react";
-import { ArrowRight, Play, Shield, Clock, Star } from "lucide-react";
+import { ArrowRight, Play, Shield, Clock, Star, Crown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="relative flex h-screen w-full items-center justify-center bg-black overflow-hidden">
       {/* Grid Background */}
@@ -13,10 +16,10 @@ const Hero = () => {
           "[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]"
         )}
       />
-      
+
       {/* Radial Gradient Overlay */}
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
-      
+
       {/* Main Content */}
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
         {/* Main Heading */}
@@ -33,13 +36,13 @@ const Hero = () => {
             With AI-Powered Precision
           </span>
         </h1>
-        
+
         {/* Subheading */}
         <p className="mt-8 max-w-2xl mx-auto text-lg sm:text-xl text-gray-300">
-          Upload your resume, get personalized job matches, tailored cover letters, 
+          Upload your resume, get personalized job matches, tailored cover letters,
           and optimized resumes—all powered by intelligent AI. Start free today.
         </p>
-        
+
         {/* Buttons Container */}
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
           {/* Primary Button */}
@@ -49,28 +52,31 @@ const Hero = () => {
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
             </span>
           </button>
-          
-          {/* Secondary Button */}
-          <button className="group flex items-center justify-center border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white font-medium py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 backdrop-blur-sm">
-            <Play className="mr-2 w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-            Watch Demo
+
+          {/* Pro Upgrade Button */}
+          <button
+            onClick={() => navigate("/pricing")}
+            className="group relative flex items-center justify-center bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-semibold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-yellow-500/50"
+          >
+            <Crown className="mr-2 w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+            Upgrade to Pro
           </button>
         </div>
-        
+
         {/* Additional Info */}
         <div className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-400">
           <div className="flex items-center">
-            <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
             <Shield className="w-4 h-4 mr-2" />
             14-day free trial
           </div>
           <div className="flex items-center">
-            <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+            <div className="w-2 h-2 bg-white rounded-full mr-2"></div>
             <Clock className="w-4 h-4 mr-2" />
             Set up in 2 minutes
           </div>
           <div className="flex items-center">
-            <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+            <div className="w-2 h-2 bg-gray-500 rounded-full mr-2"></div>
             <Star className="w-4 h-4 mr-2" />
             Cancel anytime
           </div>
@@ -90,7 +96,7 @@ const Hero = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Bottom Gradient */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent"></div>
     </div>

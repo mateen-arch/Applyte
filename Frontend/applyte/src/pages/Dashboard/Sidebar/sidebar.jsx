@@ -1,19 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
-import { 
-  Rocket, 
+import {
+  Rocket,
   BarChart3,
-  FileText, 
-  Search, 
+  FileText,
+  Search,
   Briefcase,
-  Mail,
+  Target,
   MessageSquare,
-  User, 
-  Settings, 
-  LogOut, 
-  ChevronLeft, 
+  User,
+  Settings,
+  LogOut,
+  ChevronLeft,
   ChevronRight,
   Menu,
   X,
+  Home,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -29,7 +30,7 @@ const sidebarItems = [
   { id: "resume", label: "My Resume", icon: FileText },
   { id: "job-search", label: "Job Search", icon: Search },
   { id: "applications", label: "Applications", icon: Briefcase },
-  { id: "cover-letters", label: "Cover Letters", icon: Mail },
+  { id: "skill-gap-analysis", label: "Skill Gap Analysis", icon: Target },
   { id: "interview-prep", label: "Interview Prep", icon: MessageSquare },
   { id: "settings", label: "Settings", icon: Settings },
 ];
@@ -95,7 +96,7 @@ const Sidebar = () => {
 
   // Mobile overlay
   const MobileOverlay = () => (
-    <div 
+    <div
       className={cn(
         "fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 md:hidden",
         isMobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -108,7 +109,7 @@ const Sidebar = () => {
     <>
       {/* Mobile Overlay */}
       <MobileOverlay />
-      
+
       {/* Mobile Menu Button - Only show when sidebar is closed on mobile */}
       <button
         onClick={() => setIsMobileOpen(true)}
@@ -160,7 +161,7 @@ const Sidebar = () => {
               </div>
             )}
           </button>
-          
+
           {/* Close button for mobile, Collapse button for desktop */}
           <div className="flex items-center gap-2">
             {/* Mobile Close Button */}
@@ -174,7 +175,7 @@ const Sidebar = () => {
                 <X className="w-4 h-4" />
               </Button>
             )}
-            
+
             {/* Desktop Collapse Button - Only show when not collapsed */}
             {!isCollapsed && !isMobileOpen && (
               <Button
@@ -195,7 +196,7 @@ const Sidebar = () => {
             {sidebarItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeComponent === item.id;
-              
+
               return (
                 <button
                   key={item.id}
@@ -204,15 +205,15 @@ const Sidebar = () => {
                     "w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200 group",
                     "hover:bg-neutral-800 hover:text-white hover:border-neutral-700",
                     "border border-transparent",
-                    isActive 
-                      ? "bg-neutral-800 text-white border-neutral-700 shadow-lg" 
+                    isActive
+                      ? "bg-neutral-800 text-white border-neutral-700 shadow-lg"
                       : "text-gray-400"
                   )}
                 >
                   <div className={cn(
                     "p-2 rounded-lg transition-all duration-200 shrink-0",
-                    isActive 
-                      ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white" 
+                    isActive
+                      ? "bg-gradient-to-br from-yellow-500 to-yellow-600 text-black font-medium"
                       : "bg-neutral-800 text-gray-400 group-hover:bg-neutral-700 group-hover:text-white"
                   )}>
                     <Icon className="w-4 h-4" />
@@ -239,8 +240,40 @@ const Sidebar = () => {
         {/* Footer with Logout - Proper alignment for all states */}
         <div className={cn(
           "p-4 border-t border-neutral-800",
-          isCollapsed && !isMobileOpen && "flex justify-center"
+          isCollapsed && !isMobileOpen && "flex flex-col items-center"
         )}>
+          {/* Back to Home Button */}
+          <button
+            onClick={() => navigate("/")}
+            className={cn(
+              "flex items-center gap-3 rounded-xl text-sm font-medium transition-all duration-200 group relative mb-2",
+              "hover:bg-neutral-800 hover:text-white hover:border-neutral-700",
+              "text-gray-400 border border-transparent",
+              // Different widths based on state
+              isCollapsed && !isMobileOpen ? "w-12 justify-center px-2 py-2" : "w-full px-3 py-3"
+            )}
+          >
+            <div className={cn(
+              "p-2 rounded-lg bg-neutral-800 text-gray-400 group-hover:bg-neutral-700 group-hover:text-white transition-all duration-200",
+              isCollapsed && !isMobileOpen && "mx-auto"
+            )}>
+              <Home className="w-4 h-4" />
+            </div>
+            {(!isCollapsed || isMobileOpen) && (
+              <span className="transition-all duration-200">
+                Back to Home
+              </span>
+            )}
+            {/* Tooltip for collapsed home on desktop only */}
+            {isCollapsed && !isMobileOpen && (
+              <div className="absolute left-full ml-2 z-50 hidden group-hover:block">
+                <div className="bg-neutral-800 text-white text-sm py-2 px-3 rounded-md shadow-lg border border-neutral-700 whitespace-nowrap">
+                  Back to Home
+                </div>
+              </div>
+            )}
+          </button>
+
           <button
             onClick={handleLogout}
             disabled={loggingOut}

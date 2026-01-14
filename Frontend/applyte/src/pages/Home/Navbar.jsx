@@ -33,14 +33,14 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router";
 
 const navLinks = [
-  { name: "Home", icon: Home },
-  { name: "Features", icon: Zap },
-  { name: "Pricing", icon: DollarSign },
-  { name: "Testimonial", icon: MessageSquare },
+  { name: "Home", icon: Home, path: "#" },
+  { name: "Features", icon: Zap, path: "#features" },
+  { name: "Pricing", icon: DollarSign, path: "#pricing" },
+  { name: "Testimonial", icon: MessageSquare, path: "#testimonials" },
 ];
 
 const Navbar = () => {
-  const { user,setUser } = Store();
+  const { user, setUser } = Store();
   const [isOpen, setIsOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ const Navbar = () => {
     }
   };
 
- return (
+  return (
     <nav className="bg-black/90 backdrop-blur-xl border-b border-neutral-800/80 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
         <div className="flex items-center justify-between h-16">
@@ -85,7 +85,7 @@ const Navbar = () => {
               return (
                 <a
                   key={link.name}
-                  href="#"
+                  href={link.path}
                   className="flex items-center space-x-2 text-gray-400 hover:text-white transition-all duration-300 
                            text-sm font-medium px-4 py-2 rounded-xl border border-transparent 
                            hover:bg-neutral-800/50 hover:border-neutral-700/30 hover:shadow-lg"
@@ -172,7 +172,7 @@ const Navbar = () => {
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator className="bg-neutral-700" />
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       className="text-gray-300 hover:text-white hover:bg-neutral-800 focus:bg-neutral-800 focus:text-white cursor-pointer"
                       onClick={handleLogout}
                       disabled={loggingOut}
@@ -219,7 +219,7 @@ const Navbar = () => {
                 return (
                   <a
                     key={link.name}
-                    href="#"
+                    href={link.path}
                     className="flex items-center space-x-3 text-gray-300 hover:text-white px-4 py-3 rounded-lg 
                              text-sm font-medium transition-all duration-300 hover:bg-neutral-800/50 
                              border border-transparent hover:border-neutral-700/30"

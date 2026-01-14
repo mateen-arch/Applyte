@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Sparkles, 
-  CheckCircle2, 
-  AlertCircle, 
-  Wand2, 
-  TrendingUp, 
+import {
+  Sparkles,
+  CheckCircle2,
+  AlertCircle,
+  Wand2,
+  TrendingUp,
   Lightbulb,
   Edit2,
   Save,
@@ -74,7 +74,7 @@ const ResumeEditor = ({ resume, onResumeUpdate }) => {
         const updatedResume = response.data.resume;
         setLocalResume(updatedResume);
         setAppliedSuggestions(new Set([...appliedSuggestions, suggestion.id]));
-        
+
         // Update parent component
         if (onResumeUpdate) {
           onResumeUpdate(updatedResume);
@@ -227,7 +227,7 @@ const ResumeEditor = ({ resume, onResumeUpdate }) => {
 
       {/* Generate Suggestions Button */}
       {!suggestions && (
-        <Card className="bg-neutral-900 border border-neutral-800">
+        <Card className="bg-gradient-to-br from-red-950 to-black border-red-900/50">
           <CardContent className="py-6">
             <div className="flex flex-col items-center justify-center gap-4">
               <div className="p-4 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30">
@@ -244,7 +244,7 @@ const ResumeEditor = ({ resume, onResumeUpdate }) => {
               <Button
                 onClick={generateSuggestions}
                 disabled={isGenerating}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                className="bg-yellow-500 text-white hover:bg-yellow-600 border-none"
               >
                 {isGenerating ? (
                   <>
@@ -284,11 +284,10 @@ const ResumeEditor = ({ resume, onResumeUpdate }) => {
                 return (
                   <div
                     key={suggestion.id || index}
-                    className={`p-4 rounded-lg border transition-all ${
-                      isApplied
-                        ? "bg-green-500/10 border-green-500/30"
-                        : "bg-neutral-800/50 border-neutral-700/50 hover:border-purple-500/50"
-                    }`}
+                    className={`p-4 rounded-lg border transition-all ${isApplied
+                      ? "bg-green-500/10 border-green-500/30"
+                      : "bg-gradient-to-br from-red-950 to-black border-red-900/50 hover:border-red-500/50"
+                      }`}
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
@@ -310,7 +309,7 @@ const ResumeEditor = ({ resume, onResumeUpdate }) => {
                         {suggestion.current_value && (
                           <div className="mb-2">
                             <p className="text-xs text-gray-500 mb-1">Current:</p>
-                            <p className="text-sm text-gray-400 bg-neutral-900/50 p-2 rounded">
+                            <p className="text-sm text-white bg-yellow-500 p-2 rounded">
                               {suggestion.current_value}
                             </p>
                           </div>
@@ -319,7 +318,7 @@ const ResumeEditor = ({ resume, onResumeUpdate }) => {
                         {suggestion.suggested_value && (
                           <div className="mb-2">
                             <p className="text-xs text-gray-500 mb-1">Suggested:</p>
-                            <p className="text-sm text-white bg-purple-500/10 p-2 rounded border border-purple-500/20">
+                            <p className="text-sm text-white bg-yellow-500 p-2 rounded border border-yellow-600">
                               {suggestion.suggested_value}
                             </p>
                           </div>
@@ -344,7 +343,7 @@ const ResumeEditor = ({ resume, onResumeUpdate }) => {
                           <Button
                             onClick={() => applySuggestion(suggestion)}
                             size="sm"
-                            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                            className="bg-yellow-500 text-white hover:bg-yellow-600 border-none"
                           >
                             <CheckCircle2 className="w-4 h-4 mr-1" />
                             Apply
@@ -355,7 +354,7 @@ const ResumeEditor = ({ resume, onResumeUpdate }) => {
                           onClick={() => startEditing(suggestion.field_path, currentValue)}
                           variant="outline"
                           size="sm"
-                          className="border-neutral-700 text-gray-300 hover:bg-neutral-800"
+                          className="bg-yellow-500 text-white hover:bg-yellow-600 border-none"
                         >
                           <Edit2 className="w-4 h-4 mr-1" />
                           Edit

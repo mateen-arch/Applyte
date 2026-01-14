@@ -66,7 +66,7 @@ const JobSearch = () => {
             onClick={fetchJobs}
             disabled={isLoading}
             variant="outline"
-            className="border-neutral-700 text-gray-300 hover:bg-neutral-800"
+            className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
           >
             <RefreshCw
               className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
@@ -107,7 +107,7 @@ const JobSearch = () => {
                   </p>
                   <Button
                     onClick={fetchJobs}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
                   >
                     <RefreshCw className="w-4 h-4 mr-2" />
                     Try Again
@@ -132,7 +132,7 @@ const JobSearch = () => {
                   <Button
                     onClick={fetchJobs}
                     variant="outline"
-                    className="border-neutral-700 text-gray-300 hover:bg-neutral-800"
+                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-medium"
                   >
                     <RefreshCw className="w-4 h-4 mr-2" />
                     Refresh
