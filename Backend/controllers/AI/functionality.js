@@ -1,6 +1,10 @@
 require("dotenv").config();
 const { GoogleGenAI } = require("@google/genai");
-const { jobSearchQueryGeneratorPromt, resumeAnalyzerPrompt, resumeCustomizationPrompt } = require("./prompts");
+const {
+  jobSearchQueryGeneratorPromt,
+  resumeAnalyzerPrompt,
+  resumeCustomizationPrompt,
+} = require("./prompts");
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_KEY,
@@ -27,7 +31,7 @@ const getCachedOrGenerate = async (cacheKey, generateFn) => {
 const resumeAnalyzerHelper = async (resume) => {
   try {
     // Convert the buffer to a base64 string
-    const base64Data = resume.buffer.toString("base64");
+    const base64Data = Buffer.from(resume.buffer).toString("base64");
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
