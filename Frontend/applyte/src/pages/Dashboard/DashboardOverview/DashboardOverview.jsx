@@ -64,7 +64,7 @@ const DashboardOverview = () => {
       icon: FileText,
       color: "from-yellow-500 to-yellow-600",
       bgColor: "bg-yellow-500/10",
-      borderColor: "border-yellow-500/30",
+      borderColor: "border-red-900/30",
       action: () => setActiveComponent("resume"),
     },
     {
@@ -73,7 +73,7 @@ const DashboardOverview = () => {
       icon: Mail,
       color: "from-yellow-500 to-yellow-600",
       bgColor: "bg-yellow-500/10",
-      borderColor: "border-yellow-500/30",
+      borderColor: "border-red-900/30",
       action: () => setActiveComponent("cover-letters"),
     },
     {
@@ -82,7 +82,7 @@ const DashboardOverview = () => {
       icon: Briefcase,
       color: "from-yellow-500 to-yellow-600",
       bgColor: "bg-yellow-500/10",
-      borderColor: "border-yellow-500/30",
+      borderColor: "border-red-900/30",
       action: () => setActiveComponent("applications"),
     },
   ];
@@ -138,7 +138,7 @@ const DashboardOverview = () => {
             return (
               <Card
                 key={index}
-                className={`bg-neutral-900 border ${stat.borderColor} hover:border-opacity-50 transition-all duration-300 cursor-pointer group`}
+                className={`bg-gradient-to-br from-red-950/40 to-black border ${stat.borderColor} hover:border-red-500/50 transition-all duration-300 cursor-pointer group shadow-lg shadow-red-900/5`}
                 onClick={stat.action}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -181,7 +181,7 @@ const DashboardOverview = () => {
               return (
                 <Card
                   key={index}
-                  className={`bg-neutral-900 border border-neutral-800 hover:border-opacity-50 transition-all duration-300 cursor-pointer group hover:bg-neutral-800/50`}
+                  className={`bg-gradient-to-br from-red-950/40 to-black border border-red-900/30 hover:border-red-500/50 transition-all duration-300 cursor-pointer group hover:shadow-lg hover:shadow-red-900/10`}
                   onClick={action.action}
                 >
                   <CardHeader>
@@ -204,7 +204,7 @@ const DashboardOverview = () => {
         {/* Recent Activity / Tips */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Activity */}
-          <Card className="bg-neutral-900 border border-neutral-800">
+          <Card className="bg-gradient-to-br from-red-950/40 to-black border border-red-900/30">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <BarChart3 className="w-5 h-5" />
@@ -282,7 +282,7 @@ const DashboardOverview = () => {
           </Card>
 
           {/* Tips & Insights */}
-          <Card className="bg-neutral-900 border border-neutral-800">
+          <Card className="bg-gradient-to-br from-red-950/40 to-black border border-red-900/30">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <TrendingUp className="w-5 h-5" />

@@ -8,10 +8,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Trash } from "lucide-react";
 
 const Sessions = ({ onSelectSession, onSessionCreated }) => {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
 
   const [open, setOpen] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -122,6 +124,29 @@ const Sessions = ({ onSelectSession, onSessionCreated }) => {
     }
   };
 
+  const deleteSession = async (e, sessionId) => {
+    e.stopPropagation(); // Prevent opening the session
+    if (!window.confirm("Are you sure you want to delete this session?")) return;
+
+    try {
+      setDeletingId(sessionId);
+      const res = await axios.delete(
+        `${base_url}/session/delete-session/${sessionId}`,
+        { withCredentials: true }
+      );
+      if (res.data?.success) {
+        toast.success(res.data?.message || "Session deleted");
+        await fetchSessions();
+      } else {
+        toast.error(res.data?.message || "Failed to delete session");
+      }
+    } catch (e) {
+      toast.error(e.response?.data?.message || "Failed to delete session");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   return (
     <div className="relative">
       <div className="flex items-center justify-between gap-4 mb-5">
@@ -162,29 +187,47 @@ const Sessions = ({ onSelectSession, onSessionCreated }) => {
               <button
                 key={s._id}
                 onClick={() => onSelectSession?.(s._id)}
-                className="text-left group"
+                className="text-left group w-full"
               >
-                <Card className="relative overflow-hidden bg-yellow-950/20 backdrop-blur border-yellow-500/30 transition-all hover:border-yellow-500/60 hover:bg-yellow-950/30 hover:shadow-[0_18px_50px_rgba(234,179,8,0.1)]">
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-yellow-500/10 via-yellow-600/10 to-transparent" />
-                  <CardHeader className="relative">
-                    <CardTitle className="text-white truncate">
-                      {s.role || "Session"}
-                    </CardTitle>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {s.createdAt
-                        ? new Date(s.createdAt).toLocaleString()
-                        : ""}
-                    </p>
+                <Card className="relative overflow-hidden bg-gradient-to-br from-red-950/40 to-black backdrop-blur border-red-900/30 transition-all hover:border-red-500/50 hover:shadow-[0_18px_50px_rgba(220,38,38,0.1)] h-full">
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-red-500/5 via-red-900/10 to-transparent" />
+                  <CardHeader className="relative flex flex-row items-start justify-between space-y-0 pb-2">
+                    <div className="min-w-0 pr-4">
+                      <CardTitle className="text-white truncate text-lg">
+                        {s.role || "Session"}
+                      </CardTitle>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {s.createdAt
+                          ? new Date(s.createdAt).toLocaleString()
+                          : ""}
+                      </p>
+                    </div>
+
+                    {/* Delete Button */}
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="flex-shrink-0 bg-yellow-500 hover:bg-yellow-600 text-white rounded-full w-8 h-8 p-0 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg shadow-yellow-500/20"
+                      onClick={(e) => deleteSession(e, s._id)}
+                      disabled={deletingId === s._id}
+                      title="Delete Session"
+                    >
+                      {deletingId === s._id ? (
+                        <span className="w-4 h-4 border-2 border-white/70 border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Trash className="w-4 h-4 text-white" />
+                      )}
+                    </Button>
                   </CardHeader>
-                  <CardContent className="relative space-y-2">
+                  <CardContent className="relative space-y-3 pt-2">
                     <div className="text-sm text-gray-400">
-                      <span className="text-gray-500">Topics:</span>{" "}
-                      <span className="text-gray-200">{s.topics || "-"}</span>
+                      <span className="text-gray-500 font-medium">Topics:</span>{" "}
+                      <span className="text-gray-300">{s.topics || "-"}</span>
                     </div>
                     <div className="text-sm text-gray-400">
-                      <span className="text-gray-500">Experience:</span>{" "}
-                      <span className="text-gray-200">
-                        {s.experiance ?? "-"}
+                      <span className="text-gray-500 font-medium">Experience:</span>{" "}
+                      <span className="text-gray-300">
+                        {s.experiance ?? "-"} years
                       </span>
                     </div>
                   </CardContent>

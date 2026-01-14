@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
 import { Store } from "@/store/store";
 import { toast } from "sonner";
@@ -74,6 +75,7 @@ const Payments = () => {
   const { user, setUser } = Store();
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [cardDetails, setCardDetails] = useState({
     cardNumber: "",
     cardName: "",
@@ -140,8 +142,15 @@ const Payments = () => {
     return true;
   };
 
-  const handleUpgrade = async (planName) => {
+  const handleUpgradeClick = (planName) => {
     if (planName === "Basic") return;
+    setSelectedPlan(planName);
+    setIsPaymentModalOpen(true);
+  };
+
+  const handlePaymentSubmit = async () => {
+    if (!selectedPlan) return;
+
 
     // Validate card details
     if (!validateCardDetails()) {
@@ -156,14 +165,14 @@ const Payments = () => {
         "Business": "business"
       };
 
-      const planValue = planMap[planName];
+      const planValue = planMap[selectedPlan];
       if (!planValue) {
         toast.error("Invalid plan selected");
         setIsProcessing(false);
         return;
       }
 
-      toast.info(`Processing payment for ${planName} plan...`);
+      toast.info(`Processing payment for ${selectedPlan} plan...`);
 
       // Simulate payment processing delay
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -189,7 +198,7 @@ const Payments = () => {
         };
         setUser(updatedUser);
 
-        toast.success(`Successfully upgraded to ${planName}! 🎉`);
+        toast.success(`Successfully upgraded to ${selectedPlan}! 🎉`);
         toast.info("This was a demo payment - no charges made");
 
         // Clear card details
@@ -200,6 +209,7 @@ const Payments = () => {
           cvv: "",
         });
         setSelectedPlan(null);
+        setIsPaymentModalOpen(false);
 
         // Refresh page to show updated features
         setTimeout(() => {
@@ -276,73 +286,7 @@ const Payments = () => {
           </CardContent>
         </Card>
 
-        {/* Payment Form */}
-        <Card className="bg-gradient-to-br from-neutral-900 to-neutral-950 border border-purple-500/30 mb-8">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-purple-400" />
-              Payment Information
-            </CardTitle>
-            <CardDescription className="text-gray-400">
-              Enter your card details to complete the upgrade
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 gap-4">
-              <div>
-                <Label htmlFor="cardNumber" className="text-gray-300">
-                  Card Number
-                </Label>
-                <Input
-                  id="cardNumber"
-                  placeholder="4242 4242 4242 4242"
-                  value={cardDetails.cardNumber}
-                  onChange={(e) => handleCardInputChange("cardNumber", e.target.value)}
-                  className="bg-neutral-800 border-neutral-700 text-white"
-                />
-              </div>
-              <div>
-                <Label htmlFor="cardName" className="text-gray-300">
-                  Cardholder Name
-                </Label>
-                <Input
-                  id="cardName"
-                  placeholder="John Doe"
-                  value={cardDetails.cardName}
-                  onChange={(e) => handleCardInputChange("cardName", e.target.value)}
-                  className="bg-neutral-800 border-neutral-700 text-white"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="expiryDate" className="text-gray-300">
-                    Expiry Date
-                  </Label>
-                  <Input
-                    id="expiryDate"
-                    placeholder="MM/YY"
-                    value={cardDetails.expiryDate}
-                    onChange={(e) => handleCardInputChange("expiryDate", e.target.value)}
-                    className="bg-neutral-800 border-neutral-700 text-white"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="cvv" className="text-gray-300">
-                    CVV
-                  </Label>
-                  <Input
-                    id="cvv"
-                    placeholder="123"
-                    type="password"
-                    value={cardDetails.cvv}
-                    onChange={(e) => handleCardInputChange("cvv", e.target.value)}
-                    className="bg-neutral-800 border-neutral-700 text-white"
-                  />
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+
 
         {/* Pricing Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -414,7 +358,7 @@ const Payments = () => {
 
                   {/* CTA Button */}
                   <Button
-                    onClick={() => handleUpgrade(plan.name)}
+                    onClick={() => handleUpgradeClick(plan.name)}
                     disabled={isProcessing || plan.disabled || isCurrentPlan}
                     className={`w-full transition-all duration-300 ${plan.buttonVariant === "primary"
                       ? "bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-semibold shadow-lg hover:shadow-yellow-500/50"
@@ -453,6 +397,92 @@ const Payments = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Payment Modal */}
+      <Dialog open={isPaymentModalOpen} onOpenChange={setIsPaymentModalOpen}>
+        <DialogContent className="bg-neutral-900 border-neutral-800 sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-white flex items-center gap-2">
+              <CreditCard className="w-5 h-5 text-yellow-400" />
+              Complete Payment
+            </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Enter your card details to upgrade to the <span className="text-yellow-400 font-semibold">{selectedPlan}</span> plan.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6 pt-4">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="cardNumber" className="text-gray-300 text-xs uppercase tracking-wider pl-1">
+                  Card Number
+                </Label>
+                <Input
+                  id="cardNumber"
+                  placeholder="4242 4242 4242 4242"
+                  value={cardDetails.cardNumber}
+                  onChange={(e) => handleCardInputChange("cardNumber", e.target.value)}
+                  className="bg-neutral-950 border-neutral-700 text-white focus:border-yellow-500/50"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="cardName" className="text-gray-300 text-xs uppercase tracking-wider pl-1">
+                  Cardholder Name
+                </Label>
+                <Input
+                  id="cardName"
+                  placeholder="John Doe"
+                  value={cardDetails.cardName}
+                  onChange={(e) => handleCardInputChange("cardName", e.target.value)}
+                  className="bg-neutral-950 border-neutral-700 text-white focus:border-yellow-500/50"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="expiryDate" className="text-gray-300 text-xs uppercase tracking-wider pl-1">
+                    Expiry Date
+                  </Label>
+                  <Input
+                    id="expiryDate"
+                    placeholder="MM/YY"
+                    value={cardDetails.expiryDate}
+                    onChange={(e) => handleCardInputChange("expiryDate", e.target.value)}
+                    className="bg-neutral-950 border-neutral-700 text-white focus:border-yellow-500/50"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cvv" className="text-gray-300 text-xs uppercase tracking-wider pl-1">
+                    CVV
+                  </Label>
+                  <Input
+                    id="cvv"
+                    placeholder="123"
+                    type="password"
+                    maxLength={3}
+                    value={cardDetails.cvv}
+                    onChange={(e) => handleCardInputChange("cvv", e.target.value)}
+                    className="bg-neutral-950 border-neutral-700 text-white focus:border-yellow-500/50"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <Button
+              onClick={handlePaymentSubmit}
+              disabled={isProcessing}
+              className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-semibold shadow-lg hover:shadow-yellow-500/25 transition-all duration-300"
+            >
+              {isProcessing ? "Processing..." : `Pay ${pricingPlans.find(p => p.name === selectedPlan)?.price || ""}`}
+            </Button>
+
+            <p className="text-xs text-center text-gray-500">
+              Secured by 256-bit encryption
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
